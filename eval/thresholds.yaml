@@ -1,0 +1,26 @@
+# 评测回归门禁阈值（已按 2026-10 首基线实测校准；见 eval/reports/baseline）
+#
+# floors：指标绝对下限——无论基线如何，低于即失败（质量红线）。
+# max_drop_pp：相对基线允许的最大跌幅（百分点）；"default" 兜底，未登记指标取 2.0。
+# 指标名格式 <suite>.<metric>，定义见 internal/eval/{router_runner,e2e_runner}.go。
+
+floors:
+  # 路由质量（支柱一：混合检索 + 背包装箱）——floor 略低于实测基线，允许噪声
+  router.recall_at_5: 0.85          # 实测 0.92（100 例双语金标）
+  router.mrr: 0.60                  # 实测 0.73
+  router.hit_at_1: 0.50             # 实测 0.62（仅统计设 expect_top1 的用例）
+  router.precision_at_5: 0.30       # 实测 0.41（软门禁：单相关用例 5 选 1 天然低）
+  router.token_saved_pct_avg: 60.0  # 实测 72.5（简历 ↓70% 的证据下限）
+
+  # E2E 任务质量（支柱二 + 任务横层）
+  e2e.success_rate: 0.95            # 实测 1.00（40 例含 HITL 批准/拒绝双路）
+  e2e.state_correct_rate: 0.95      # 实测 1.00
+  e2e.answer_contains_rate: 0.95    # 实测 1.00
+  e2e.tool_trace_match_rate: 0.95   # 实测 1.00
+  e2e.intent_accuracy: 0.95         # 实测 1.00（仅统计断言 intent 的用例）
+
+max_drop_pp:
+  default: 2.0                      # 任何指标较基线跌超 2pp 即回归拦截
+  router.token_saved_pct_avg: 5.0   # token 节省对参数敏感，放宽到 5pp
+  router.precision_at_5: 5.0        # 同上：小集合指标波动大
+  router.hit_at_1: 5.0              # 分母小（expect_top1 用例数），放宽

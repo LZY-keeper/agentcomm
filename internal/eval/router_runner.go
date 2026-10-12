@@ -102,7 +102,7 @@ func (r *RouterRunner) Run(ctx context.Context, cases []RouterCase) *SuiteResult
 		// 用例级失败判定：recall@k < 1 视为该用例未全召回（进失败列表供报告）
 		if rec < 1 {
 			reasons := []string{fmt.Sprintf("recall@%d=%.2f（相关 %v，实选 %v）", r.params.TopK, rec, c.RelevantTools, selected)}
-			if c.ExpectTop1 != "" && selected[0] != c.ExpectTop1 {
+			if c.ExpectTop1 != "" && len(selected) > 0 && selected[0] != c.ExpectTop1 {
 				reasons = append(reasons, fmt.Sprintf("top1=%s 期望 %s", selected[0], c.ExpectTop1))
 			}
 			suite.Failures = append(suite.Failures, CaseFailure{ID: c.ID, Query: c.Query, Reasons: reasons})

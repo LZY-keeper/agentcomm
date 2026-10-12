@@ -1,0 +1,121 @@
+# 路由金标数据集 v1 — 「查询 → 期望被选中的工具集合」
+# 100 例：math 20 / weather 16 / code 18 / file 14 / web 12 / mixed+distractor 20
+# 中英混合约 6:4；multi-relevant（多相关工具）约 35%。
+# 校验规则见 internal/eval/dataset.go：id 唯一、工具必须属于 demo12、difficulty 枚举。
+version: 1
+suite: router
+meta:
+  dataset_version: v1
+  toolset: demo12            # router.DemoTools()，5 server / 12 工具
+cases:
+  # ---------- math (20) ----------
+  - {id: r-math-001, category: math, difficulty: easy, query: "计算 123 + 456 等于多少", relevant_tools: ["math/calculator"], expect_top1: math/calculator, notes: 中文基础加法}
+  - {id: r-math-002, category: math, difficulty: easy, query: "what is 25 * 4", relevant_tools: ["math/calculator"], expect_top1: math/calculator, notes: 英文乘法}
+  - {id: r-math-003, category: math, difficulty: easy, query: "计算 2 的 10 次方", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-004, category: math, difficulty: easy, query: "16 的平方根是多少", relevant_tools: ["math/calculator", "math/sqrt"], expect_top1: math/calculator, notes: 平方根双工具相关}
+  - {id: r-math-005, category: math, difficulty: easy, query: "compute 1024 divided by 8", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-006, category: math, difficulty: easy, query: "帮我算一下 3.14 乘 2", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-007, category: math, difficulty: easy, query: "100 减 37 等于", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-008, category: math, difficulty: hard, query: "(123 + 456) * 2 - 100 / 4 的结果", relevant_tools: ["math/calculator"], expect_top1: math/calculator, notes: 复合表达式}
+  - {id: r-math-009, category: math, difficulty: easy, query: "9 的开方", relevant_tools: ["math/sqrt", "math/calculator"], notes: 开方词根，sqrt 直配}
+  - {id: r-math-010, category: math, difficulty: easy, query: "sqrt of 144", relevant_tools: ["math/sqrt"], expect_top1: math/sqrt, notes: 英文直呼 sqrt}
+  - {id: r-math-011, category: math, difficulty: easy, query: "7 加 8 再乘 2", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-012, category: math, difficulty: hard, query: "把 255 转成二进制再算 1010 和 1100 的按位与", relevant_tools: ["math/calculator"], notes: 混合表述，核心仍是算术求值}
+  - {id: r-math-013, category: math, difficulty: easy, query: "calculate 99 + 1", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-014, category: math, difficulty: easy, query: "算式 88/4 等于多少", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-015, category: math, difficulty: hard, query: "先算 6 乘 7，再把结果平方根", relevant_tools: ["math/calculator", "math/sqrt"], notes: 多步链，两工具都相关}
+  - {id: r-math-016, category: math, difficulty: easy, query: "2 的 20 次方 power of two", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-017, category: math, difficulty: easy, query: "1000000 除以 7 余数是多少", relevant_tools: ["math/calculator"], expect_top1: math/calculator}
+  - {id: r-math-018, category: math, difficulty: hard, query: "帮我把这批数字求和：1,2,3,4,5,6,7,8,9,10", relevant_tools: ["math/calculator"], notes: 批量求和仍走计算器}
+  - {id: r-math-019, category: math, difficulty: easy, query: "minus 15 plus 30 equals", relevant_tools: ["math/calculator"], expect_top1: math/calculator, notes: 纯英文关键词}
+  - {id: r-math-020, category: math, difficulty: easy, query: "0.1 加 0.2 等于 0.3 吗，帮我精确计算", relevant_tools: ["math/calculator"], expect_top1: math/calculator, notes: 浮点陷阱表述}
+
+  # ---------- weather (16) ----------
+  - {id: r-weather-001, category: weather, difficulty: easy, query: "今天北京天气怎么样", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-002, category: weather, difficulty: easy, query: "上海明天下雨吗", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-003, category: weather, difficulty: easy, query: "what is the weather in Tokyo", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-004, category: weather, difficulty: easy, query: "广州今天气温多少度", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-005, category: weather, difficulty: easy, query: "查一下深圳的天气", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-006, category: weather, difficulty: easy, query: "weather forecast for New York", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-007, category: weather, difficulty: hard, query: "明天出门需要带伞吗，成都", relevant_tools: ["net/get_weather"], notes: 意图隐含（带伞→降雨），无天气关键词直配}
+  - {id: r-weather-008, category: weather, difficulty: easy, query: "杭州本周温度变化", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-009, category: weather, difficulty: easy, query: "is it going to snow in Harbin", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-010, category: weather, difficulty: easy, query: "西安今天紫外线强吗", relevant_tools: ["net/get_weather"], notes: 紫外线是天气属性}
+  - {id: r-weather-011, category: weather, difficulty: easy, query: "重庆今天多少摄氏度", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-012, category: weather, difficulty: hard, query: "对比北京和上海的天气", relevant_tools: ["net/get_weather"], notes: 双城市仍单工具可完成}
+  - {id: r-weather-013, category: weather, difficulty: easy, query: "武汉有雾霾吗", relevant_tools: ["net/get_weather"], notes: 雾霾属天气现象}
+  - {id: r-weather-014, category: weather, difficulty: easy, query: "台北今明两天天气", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-015, category: weather, difficulty: easy, query: "temperature in London right now", relevant_tools: ["net/get_weather"], expect_top1: net/get_weather}
+  - {id: r-weather-016, category: weather, difficulty: easy, query: "昆明气候怎么样，适合穿什么", relevant_tools: ["net/get_weather"], notes: 穿衣建议依赖天气}
+
+  # ---------- code (18) ----------
+  - {id: r-code-001, category: code, difficulty: easy, query: "帮我审查这段 Python 代码", relevant_tools: ["dev/code_review"], expect_top1: dev/code_review}
+  - {id: r-code-002, category: code, difficulty: easy, query: "review this Go snippet for bugs", relevant_tools: ["dev/code_review"], expect_top1: dev/code_review}
+  - {id: r-code-003, category: code, difficulty: easy, query: "把这段 Java 代码格式化一下", relevant_tools: ["dev/format_code"], expect_top1: dev/format_code}
+  - {id: r-code-004, category: code, difficulty: easy, query: "format my TypeScript file", relevant_tools: ["dev/format_code"], expect_top1: dev/format_code}
+  - {id: r-code-005, category: code, difficulty: easy, query: "跑一下项目的单元测试", relevant_tools: ["dev/run_tests"], expect_top1: dev/run_tests}
+  - {id: r-code-006, category: code, difficulty: easy, query: "run the test suite", relevant_tools: ["dev/run_tests"], expect_top1: dev/run_tests}
+  - {id: r-code-007, category: code, difficulty: easy, query: "这段 C++ 代码有 bug 吗", relevant_tools: ["dev/code_review"], expect_top1: dev/code_review}
+  - {id: r-code-008, category: code, difficulty: hard, query: "重构这个函数，然后帮我检查有没有引入新问题", relevant_tools: ["dev/code_review", "dev/format_code"], notes: 重构→复查链，两工具相关}
+  - {id: r-code-009, category: code, difficulty: easy, query: "code smells in this Ruby method", relevant_tools: ["dev/code_review"], expect_top1: dev/code_review}
+  - {id: r-code-010, category: code, difficulty: easy, query: "帮我美化这段 HTML 缩进", relevant_tools: ["dev/format_code"], notes: 美化=格式化同义}
+  - {id: r-code-011, category: code, difficulty: easy, query: "check my Rust code for memory issues", relevant_tools: ["dev/code_review"], expect_top1: dev/code_review}
+  - {id: r-code-012, category: code, difficulty: easy, query: "pytest 全部跑一遍看有没有挂的", relevant_tools: ["dev/run_tests"], notes: pytest=跑测试}
+  - {id: r-code-013, category: code, difficulty: hard, query: "这段代码风格符合规范吗，顺便跑下测试", relevant_tools: ["dev/code_review", "dev/run_tests"], notes: 审查+测试双意图}
+  - {id: r-code-014, category: code, difficulty: easy, query: "帮我 lint 一下 JavaScript", relevant_tools: ["dev/code_review"], notes: lint≈静态审查}
+  - {id: r-code-015, category: code, difficulty: easy, query: "gofmt this file", relevant_tools: ["dev/format_code"], expect_top1: dev/format_code}
+  - {id: r-code-016, category: code, difficulty: easy, query: "这段 SQL 有注入风险吗", relevant_tools: ["dev/code_review"], notes: 安全审查属代码审查域}
+  - {id: r-code-017, category: code, difficulty: easy, query: "unit tests failing, help me run them", relevant_tools: ["dev/run_tests"], expect_top1: dev/run_tests}
+  - {id: r-code-018, category: code, difficulty: hard, query: "提交前把代码格式化、审查、跑测试都做一遍", relevant_tools: ["dev/format_code", "dev/code_review", "dev/run_tests"], notes: 三工具全相关}
+
+  # ---------- file (14) ----------
+  - {id: r-file-001, category: file, difficulty: easy, query: "读取 /etc/hosts 文件内容", relevant_tools: ["fs/read_file"], expect_top1: fs/read_file}
+  - {id: r-file-002, category: file, difficulty: easy, query: "read the config.yaml file", relevant_tools: ["fs/read_file"], expect_top1: fs/read_file}
+  - {id: r-file-003, category: file, difficulty: easy, query: "把结果写入 output.txt", relevant_tools: ["fs/write_file"], expect_top1: fs/write_file}
+  - {id: r-file-004, category: file, difficulty: easy, query: "save this log to result.log", relevant_tools: ["fs/write_file"], expect_top1: fs/write_file}
+  - {id: r-file-005, category: file, difficulty: easy, query: "打开 README.md 看一下", relevant_tools: ["fs/read_file"], notes: 打开=读取}
+  - {id: r-file-006, category: file, difficulty: hard, query: "读一下 main.go，把里面的TODO都整理到 todo.md", relevant_tools: ["fs/read_file", "fs/write_file"], notes: 读+写链路双工具}
+  - {id: r-file-007, category: file, difficulty: easy, query: "查看 /var/log/syslog 最后 100 行", relevant_tools: ["fs/read_file"], expect_top1: fs/read_file}
+  - {id: r-file-008, category: file, difficulty: easy, query: "write \"hello\" to a.txt", relevant_tools: ["fs/write_file"], expect_top1: fs/write_file}
+  - {id: r-file-009, category: file, difficulty: easy, query: "这个 json 文件里有什么", relevant_tools: ["fs/read_file"], notes: 无路径但意图明确}
+  - {id: r-file-010, category: file, difficulty: easy, query: "导出这份报告到 export.md", relevant_tools: ["fs/write_file"], notes: 导出=写文件}
+  - {id: r-file-011, category: file, difficulty: easy, query: "cat the Dockerfile please", relevant_tools: ["fs/read_file"], expect_top1: fs/read_file}
+  - {id: r-file-012, category: file, difficulty: easy, query: "帮我把配置文件内容展示出来", relevant_tools: ["fs/read_file"], notes: 展示=读取}
+  - {id: r-file-013, category: file, difficulty: easy, query: "append this line to notes.txt", relevant_tools: ["fs/write_file"], expect_top1: fs/write_file}
+  - {id: r-file-014, category: file, difficulty: easy, query: "dump the current settings to settings.json", relevant_tools: ["fs/write_file"], expect_top1: fs/write_file}
+
+  # ---------- web (12) ----------
+  - {id: r-web-001, category: web, difficulty: easy, query: "搜索 Go 语言的最新特性", relevant_tools: ["web/search"], expect_top1: web/search}
+  - {id: r-web-002, category: web, difficulty: easy, query: "search for rust async runtime comparison", relevant_tools: ["web/search"], expect_top1: web/search}
+  - {id: r-web-003, category: web, difficulty: easy, query: "打开 https://example.com 看看内容", relevant_tools: ["web/fetch_url"], expect_top1: web/fetch_url}
+  - {id: r-web-004, category: web, difficulty: easy, query: "fetch the page at https://news.ycombinator.com", relevant_tools: ["web/fetch_url"], expect_top1: web/fetch_url}
+  - {id: r-web-005, category: web, difficulty: easy, query: "帮我查一下 MCP 协议是什么", relevant_tools: ["web/search"], notes: 查≈搜索}
+  - {id: r-web-006, category: web, difficulty: easy, query: "crawl this URL and extract the title", relevant_tools: ["web/fetch_url"], expect_top1: web/fetch_url}
+  - {id: r-web-007, category: web, difficulty: easy, query: "2026 年 A2A 规范有哪些更新", relevant_tools: ["web/search"], notes: 时效信息需搜索}
+  - {id: r-web-008, category: web, difficulty: easy, query: "grab the HTML of my blog homepage", relevant_tools: ["web/fetch_url"], expect_top1: web/fetch_url}
+  - {id: r-web-009, category: web, difficulty: easy, query: "latest news about AI agents", relevant_tools: ["web/search", "net/get_news"], notes: 英文 news 双相关（web 搜索/net 新闻）}
+  - {id: r-web-010, category: web, difficulty: easy, query: "帮我检索 wasm 沙箱的资料", relevant_tools: ["web/search"], notes: 检索≈搜索}
+  - {id: r-web-011, category: web, difficulty: easy, query: "download the content of that link", relevant_tools: ["web/fetch_url"], notes: download 链接内容=fetch}
+  - {id: r-web-012, category: web, difficulty: easy, query: "look up the release notes of wazero", relevant_tools: ["web/search"], notes: look up=查询搜索}
+
+  # ---------- mixed / distractor (20) ----------
+  - {id: r-dist-001, category: mixed, difficulty: distractor, query: "搜索一下今天北京的天气预报", relevant_tools: ["net/get_weather", "web/search"], notes: 二义：搜索+天气，双工具召回}
+  - {id: r-dist-002, category: mixed, difficulty: distractor, query: "把搜索到的资料写成 markdown 文件", relevant_tools: ["fs/write_file"], notes: 干扰词「搜索」，真意图是写文件}
+  - {id: r-dist-003, category: mixed, difficulty: distractor, query: "读一下这份代码然后帮我审查", relevant_tools: ["dev/code_review"], notes: 干扰词「读」，真意图代码审查}
+  - {id: r-dist-004, category: mixed, difficulty: distractor, query: "帮我算一下这个月开了几天会", relevant_tools: ["math/calculator"], notes: 「算」非算术而是统计，仍需计算器兜底}
+  - {id: r-dist-005, category: mixed, difficulty: distractor, query: "weather in Beijing - search and also fetch the meteo page", relevant_tools: ["web/search", "web/fetch_url", "net/get_weather"], notes: 英文三工具复合}
+  - {id: r-dist-006, category: mixed, difficulty: distractor, query: "先读配置文件，再搜索里面的参数含义", relevant_tools: ["fs/read_file", "web/search"], notes: 读+搜索链}
+  - {id: r-dist-007, category: mixed, difficulty: distractor, query: "compute the sha of this file", relevant_tools: ["math/calculator"], notes: 干扰：compute+file，实际无哈希工具，计算器最相关}
+  - {id: r-dist-008, category: mixed, difficulty: distractor, query: "run tests and write the results to a file", relevant_tools: ["dev/run_tests", "fs/write_file"], notes: 测试+写文件链}
+  - {id: r-dist-009, category: mixed, difficulty: distractor, query: "把天气数据画成图表", relevant_tools: ["net/get_weather"], notes: 干扰「图表」，数据源仍是天气工具}
+  - {id: r-dist-010, category: mixed, difficulty: distractor, query: "审查我写的计算器代码", relevant_tools: ["dev/code_review"], notes: 「计算器」干扰词，真意图审查}
+  - {id: r-dist-011, category: mixed, difficulty: distractor, query: "translate this error message and search for a fix", relevant_tools: ["web/search"], notes: translate 干扰，fix 靠搜索}
+  - {id: r-dist-012, category: mixed, difficulty: distractor, query: "文件里有多少行代码", relevant_tools: ["fs/read_file"], notes: 「多少行」数字问题但需先读文件}
+  - {id: r-dist-013, category: mixed, difficulty: distractor, query: "search GitHub for the MCP SDK repo and save the URL", relevant_tools: ["web/search", "fs/write_file"], notes: 搜索+保存链}
+  - {id: r-dist-014, category: mixed, difficulty: distractor, query: "sqrt(2) 保留 10 位小数", relevant_tools: ["math/sqrt", "math/calculator"], notes: sqrt+精度，双工具}
+  - {id: r-dist-015, category: mixed, difficulty: distractor, query: "帮我把这段代码的执行结果写进日志文件", relevant_tools: ["fs/write_file"], notes: 代码词干扰，真意图写文件}
+  - {id: r-dist-016, category: mixed, difficulty: distractor, query: "今天的新闻里有没有提到 AI", relevant_tools: ["net/get_news"], expect_top1: net/get_news, notes: 新闻意图}
+  - {id: r-dist-017, category: mixed, difficulty: distractor, query: "get me the latest AI headlines", relevant_tools: ["net/get_news"], expect_top1: net/get_news, notes: 英文新闻意图}
+  - {id: r-dist-018, category: mixed, difficulty: distractor, query: "对比这份代码和上个版本的差异，重点看性能", relevant_tools: ["dev/code_review"], notes: 对比+性能仍是审查}
+  - {id: r-dist-019, category: mixed, difficulty: distractor, query: "read the file then calculate the average of the numbers inside", relevant_tools: ["fs/read_file", "math/calculator"], notes: 读+算双工具链}
+  - {id: r-dist-020, category: mixed, difficulty: distractor, query: "把我搜索收集的资料整理进 report.docx", relevant_tools: ["fs/write_file"], notes: 「搜索」干扰，落点是写文件}

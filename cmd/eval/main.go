@@ -18,6 +18,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"agentcomm/internal/config"
@@ -63,10 +64,14 @@ func main() {
 			Judge:       *judgeKind,
 			Datasets:    map[string]string{},
 		},
+		Suites: map[string]*eval.SuiteResult{},
 	}
 
 	if runSuites["router"] {
-		params := router.Params{TopK: 5, TokenBudget: 1500, CandidateCap: 50, SimThreshold: 0.25,
+		// SimThreshold=0.0：mock 哈希 embedding 的余弦相似度未按真实语义校准，
+		// 0.25 阈值会把大多数查询拦成空选择（单测同取 0.0，理由一致）。
+		// 阈值拦截属真实 embedding（dashscope）的生产调参范畴，评测测的是排序质量。
+		params := router.Params{TopK: 5, TokenBudget: 1500, CandidateCap: 50, SimThreshold: 0.0,
 			DenseWeight: 0.6, SparseWeight: 0.3, CapWeight: 0.1}
 		runner, err := eval.NewRouterRunner(ctx, params)
 		must(err)
@@ -99,12 +104,15 @@ func main() {
 		report.Meta.Datasets["e2e"] = meta.Version
 	}
 
-	// 写报告：时间戳目录 + latest/（基线模式写固定目录名 baseline 不带时间戳）
+	// 写报告：时间戳目录 + latest/。基线重建模式（-out 指向 baseline 目录，
+	// make eval-baseline 约定）直接写 <out>/report.json——门禁读固定路径。
 	dir := filepath.Join(*outDir, time.Now().Format("20060102-150405")+"-"+shortCommit())
-	if *baseline != "" {
-		dir = filepath.Join(*outDir, "gate")
+	writeLatest := *wantLatest
+	if strings.HasSuffix(filepath.Clean(*outDir), "baseline") {
+		dir = *outDir
+		writeLatest = false // 基线不覆盖 latest（latest 永远反映最近一次普通运行）
 	}
-	must(report.WriteJSON(dir, *wantLatest))
+	must(report.WriteJSON(dir, writeLatest))
 	if *format == "markdown" {
 		fmt.Print(report.RenderMarkdown())
 	} else {
@@ -152,7 +160,11 @@ func printTable(r *eval.Report) {
 			fmt.Printf("  分类聚合：\n")
 			for _, cat := range sortedMetricNames(toFloatMap(s.ByCategory)) {
 				vals := s.ByCategory[cat]
-				fmt.Printf("    %-12s recall@5=%.4f mrr=%.4f n=%d\n", cat, vals["recall_at_5"], vals["mrr"], int(vals["case_count"]))
+				if sr, ok := vals["success_rate"]; ok { // E2E 分类维度
+					fmt.Printf("    %-12s success=%.4f n=%d\n", cat, sr, int(vals["case_count"]))
+				} else { // router 分类维度
+					fmt.Printf("    %-12s recall@5=%.4f mrr=%.4f n=%d\n", cat, vals["recall_at_5"], vals["mrr"], int(vals["case_count"]))
+				}
 			}
 		}
 		for _, f := range s.Failures {
@@ -187,12 +199,34 @@ func sortedMetricNames(m map[string]float64) []string {
 	return names
 }
 
+// gitCommit 解析当前 HEAD 提交哈希（.git/HEAD → ref 文件；detached 时 HEAD
+// 直接是哈希）。失败返回空（报告相应字段留空，不影响门禁）。
 func gitCommit() string {
-	b, err := os.ReadFile(".git/HEAD")
+	head, err := os.ReadFile(".git/HEAD")
 	if err != nil {
 		return ""
 	}
-	return string(b)
+	s := strings.TrimSpace(string(head))
+	if !strings.HasPrefix(s, "ref: ") {
+		return s
+	}
+	refPath := filepath.Join(".git", strings.TrimPrefix(s, "ref: "))
+	b, err := os.ReadFile(refPath)
+	if err != nil {
+		// packed-refs 兜底
+		ref := strings.TrimPrefix(s, "ref: ")
+		packed, err := os.ReadFile(filepath.Join(".git", "packed-refs"))
+		if err != nil {
+			return ""
+		}
+		for _, line := range strings.Split(string(packed), "\n") {
+			if strings.HasSuffix(strings.TrimSpace(line), " "+ref) {
+				return strings.Fields(line)[0]
+			}
+		}
+		return ""
+	}
+	return strings.TrimSpace(string(b))
 }
 
 func shortCommit() string {

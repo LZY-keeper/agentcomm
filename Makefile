@@ -1,6 +1,7 @@
 ## agentcomm v3 — 企业级智能 Agent 网关 / MCP 工具路由引擎
 ## v3 新增：任务持久化 + 人工审批（HITL）、治理层（key/限流/预算/审计）、
 ##          A2A v1.0 卡片签名、MCP 2025-11-25/2026-07-28 协商、anti-rug-pull
+## v3.1 新增：评测子系统（金标集 / 召回与 E2E 指标 / 版本化报告 / 回归门禁）
 ## 通用构建脚本。首次构建前先 `make tidy`（需联网拉依赖）。
 
 VERSION  ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
@@ -8,7 +9,7 @@ LDFLAGS  := -X main.Version=$(VERSION)
 GOFLAGS  := -trimpath
 GO       := go
 
-.PHONY: all tidy proto build run test vet fmt bench-router docker up down clean help
+.PHONY: all tidy proto build run test vet fmt bench-router eval eval-gate eval-baseline docker up down clean help
 
 all: build
 
@@ -54,6 +55,18 @@ fmt:
 ## 路由引擎离线评测：输出 token 节省%、召回/精度（支柱一量化指标）
 bench-router:
 	$(GO) run ./cmd/bench-router
+
+## 离线评测（router 召回/MRR + E2E 成功率，140 例金标），写 eval/reports/ 并复制 latest/
+eval:
+	$(GO) run ./cmd/eval -suite all -out eval/reports
+
+## 评测回归门禁（对比 eval/reports/baseline，CI 同款；指标回退 exit 1）
+eval-gate:
+	$(GO) run ./cmd/eval -suite all -out eval/reports -baseline eval/reports/baseline/report.json
+
+## 重建评测基线（先 make eval 确认指标合理，再跑本目标并 git diff 评审 report.json）
+eval-baseline:
+	$(GO) run ./cmd/eval -suite all -out eval/reports/baseline
 
 ## Docker（需能拉镜像/联网）
 docker:

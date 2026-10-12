@@ -1,0 +1,2425 @@
+{
+  "schema_version": 1,
+  "meta": {
+    "generated_at": "2026-10-12T08:35:13Z",
+    "commit": "daba3829017107ebdd8c037da4cec533a66fc0fc",
+    "go_version": "go1.25.0",
+    "embedding": "mock-1024",
+    "llm": "mock",
+    "judge": "mock",
+    "params": {
+      "cap_w": 0.1,
+      "dense_w": 0.6,
+      "sparse_w": 0.3,
+      "token_budget": 1500,
+      "top_k": 5
+    },
+    "datasets": {
+      "e2e": "v1",
+      "router": "v1"
+    }
+  },
+  "suites": {
+    "e2e": {
+      "metrics": {
+        "answer_contains_rate": 1,
+        "avg_input_tokens": 0,
+        "avg_output_tokens": 9.3,
+        "intent_accuracy": 1,
+        "state_correct_rate": 1,
+        "success_rate": 1,
+        "tool_trace_match_rate": 1
+      },
+      "by_category": {
+        "code": {
+          "case_count": 6,
+          "success_rate": 1
+        },
+        "file": {
+          "case_count": 4,
+          "success_rate": 1
+        },
+        "general": {
+          "case_count": 4,
+          "success_rate": 1
+        },
+        "hitl": {
+          "case_count": 8,
+          "success_rate": 1
+        },
+        "math": {
+          "case_count": 12,
+          "success_rate": 1
+        },
+        "weather": {
+          "case_count": 6,
+          "success_rate": 1
+        }
+      },
+      "case_count": 40,
+      "cases": [
+        {
+          "agent": "code-1",
+          "answer": "审查结论：审查完成：无阻塞问题，未发现明显 bug，代码 ok 已 checked",
+          "category": "code",
+          "id": "e-code-001",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 17,
+          "pass": true,
+          "query": "帮我审查这段 Python 代码",
+          "state": "completed",
+          "tool_calls": [
+            "code_review"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "code-1",
+          "answer": "review: 审查完成：无阻塞问题，未发现明显 bug，代码 ok 已 checked",
+          "category": "code",
+          "id": "e-code-002",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 14,
+          "pass": true,
+          "query": "review this Go snippet",
+          "state": "completed",
+          "tool_calls": [
+            "code_review"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "code-1",
+          "answer": "已处理：formatted code ok",
+          "category": "code",
+          "id": "e-code-003",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 3,
+          "pass": true,
+          "query": "把这段代码格式化",
+          "state": "completed",
+          "tool_calls": [
+            "format_code"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "code-1",
+          "answer": "测试结果：all passed",
+          "category": "code",
+          "id": "e-code-004",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 3,
+          "pass": true,
+          "query": "跑一下单元测试",
+          "state": "completed",
+          "tool_calls": [
+            "run_tests"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "code-1",
+          "answer": "结论：审查完成：无阻塞问题，未发现明显 bug，代码 ok 已 checked",
+          "category": "code",
+          "id": "e-code-005",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 16,
+          "pass": true,
+          "query": "这段代码有 bug 吗",
+          "state": "completed",
+          "tool_calls": [
+            "code_review"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "code-1",
+          "answer": "code 审查完成：无阻塞问题，未发现明显 bug，代码 ok 已 checked",
+          "category": "code",
+          "id": "e-code-006",
+          "input_tokens": 0,
+          "intent": "code",
+          "output_tokens": 14,
+          "pass": true,
+          "query": "check my Rust code",
+          "state": "completed",
+          "tool_calls": [
+            "code_review"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "file-1",
+          "answer": "文件内容：localhost key=value # agentcomm",
+          "category": "file",
+          "id": "e-file-001",
+          "input_tokens": 0,
+          "intent": "file",
+          "output_tokens": 3,
+          "pass": true,
+          "query": "读取 /etc/hosts 文件内容",
+          "state": "completed",
+          "tool_calls": [
+            "read_file"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "file-1",
+          "answer": "content: localhost key=value # agentcomm",
+          "category": "file",
+          "id": "e-file-002",
+          "input_tokens": 0,
+          "intent": "file",
+          "output_tokens": 0,
+          "pass": true,
+          "query": "read the config file",
+          "state": "completed",
+          "tool_calls": [
+            "read_file"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "file-1",
+          "answer": "已写入：written ok",
+          "category": "file",
+          "id": "e-file-003",
+          "input_tokens": 0,
+          "intent": "file",
+          "output_tokens": 3,
+          "pass": true,
+          "query": "把结果写入 output.txt",
+          "state": "completed",
+          "tool_calls": [
+            "write_file"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "file-1",
+          "answer": "README：localhost key=value # agentcomm",
+          "category": "file",
+          "id": "e-file-004",
+          "input_tokens": 0,
+          "intent": "file",
+          "output_tokens": 1,
+          "pass": true,
+          "query": "查看 README 内容",
+          "state": "completed",
+          "tool_calls": [
+            "read_file"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "（离线 mock 模型）我收到了你的问题：你好，介绍一下你自己。在真实模式下会调用 LLM 流式回答；当前为免 key 演示模式，仅回显意图。",
+          "category": "general",
+          "id": "e-general-001",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 36,
+          "pass": true,
+          "query": "你好，介绍一下你自己",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "（离线 mock 模型）我收到了你的问题：今天吃什么好呢。在真实模式下会调用 LLM 流式回答；当前为免 key 演示模式，仅回显意图。",
+          "category": "general",
+          "id": "e-general-002",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 34,
+          "pass": true,
+          "query": "今天吃什么好呢",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "关于 A2A：A2A 规范要点摘要（离线桩）",
+          "category": "general",
+          "id": "e-general-003",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 9,
+          "pass": true,
+          "query": "搜索 A2A 规范并总结要点",
+          "state": "completed",
+          "tool_calls": [
+            "search"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "标题：Example Domain",
+          "category": "general",
+          "id": "e-general-004",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 2,
+          "pass": true,
+          "query": "fetch example.com 的标题",
+          "state": "completed",
+          "tool_calls": [
+            "fetch_url"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "完成：guarded-result",
+          "category": "hitl",
+          "id": "e-hitl-approve-001",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 2,
+          "pass": true,
+          "query": "执行需要审批的回声操作",
+          "state": "completed",
+          "tool_calls": [
+            "eval_guarded_echo"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "结果：guarded-result",
+          "category": "hitl",
+          "id": "e-hitl-approve-002",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 2,
+          "pass": true,
+          "query": "帮我执行敏感的回声任务",
+          "state": "completed",
+          "tool_calls": [
+            "eval_guarded_echo"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "done: guarded-result",
+          "category": "hitl",
+          "id": "e-hitl-approve-003",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 0,
+          "pass": true,
+          "query": "run the guarded echo with payload",
+          "state": "completed",
+          "tool_calls": [
+            "eval_guarded_echo"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "已执行：guarded-result",
+          "category": "hitl",
+          "id": "e-hitl-approve-004",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 3,
+          "pass": true,
+          "query": "需要授权的回声调用，请执行",
+          "state": "completed",
+          "tool_calls": [
+            "eval_guarded_echo"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "处理结果：工具调用被拒绝：评测驱动",
+          "category": "hitl",
+          "id": "e-hitl-deny-001",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "执行需要审批的回声操作",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "处理结果：工具调用被拒绝：评测驱动",
+          "category": "hitl",
+          "id": "e-hitl-deny-002",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "帮我执行敏感的回声任务",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "处理结果：工具调用被拒绝：评测驱动",
+          "category": "hitl",
+          "id": "e-hitl-deny-003",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "delete the production database",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "处理结果：工具调用被拒绝：评测驱动",
+          "category": "hitl",
+          "id": "e-hitl-deny-004",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "escalate privileges please",
+          "state": "completed",
+          "tool_calls": [],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「计算 2+3」的答案是 5。",
+          "category": "math",
+          "id": "e-math-001",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "计算 2+3",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「计算 123 + 456 等于多少」的答案是 579。",
+          "category": "math",
+          "id": "e-math-002",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 14,
+          "pass": true,
+          "query": "计算 123 + 456 等于多少",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「what is 25 * 4」的答案是 100。",
+          "category": "math",
+          "id": "e-math-003",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 9,
+          "pass": true,
+          "query": "what is 25 * 4",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「计算 1024 / 8」的答案是 128。",
+          "category": "math",
+          "id": "e-math-004",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "计算 1024 / 8",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「7 减 10 等于多少」的答案是 -3。",
+          "category": "math",
+          "id": "e-math-005",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 12,
+          "pass": true,
+          "query": "7 减 10 等于多少",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「compute 9 * 9」的答案是 81。",
+          "category": "math",
+          "id": "e-math-006",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 9,
+          "pass": true,
+          "query": "compute 9 * 9",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「计算 3.5 + 4.5」的答案是 8。",
+          "category": "math",
+          "id": "e-math-007",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "计算 3.5 + 4.5",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「100 - 58 = ?」的答案是 42。",
+          "category": "math",
+          "id": "e-math-008",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 10,
+          "pass": true,
+          "query": "100 - 58 = ?",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「帮我算 11 * 11」的答案是 121。",
+          "category": "math",
+          "id": "e-math-009",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "帮我算 11 * 11",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「calculate 2 ^ 10」的答案是 1024。",
+          "category": "math",
+          "id": "e-math-010",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 9,
+          "pass": true,
+          "query": "calculate 2 ^ 10",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「13 加 29 是多少」的答案是 42。",
+          "category": "math",
+          "id": "e-math-011",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 11,
+          "pass": true,
+          "query": "13 加 29 是多少",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "math-1",
+          "answer": "根据工具结果，「计算 500 除以 4」的答案是 125。",
+          "category": "math",
+          "id": "e-math-012",
+          "input_tokens": 0,
+          "intent": "math",
+          "output_tokens": 12,
+          "pass": true,
+          "query": "计算 500 除以 4",
+          "state": "completed",
+          "tool_calls": [
+            "calculator"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "weather-1",
+          "answer": "根据工具结果，北京今天：晴，25°C",
+          "category": "weather",
+          "id": "e-weather-001",
+          "input_tokens": 0,
+          "intent": "weather",
+          "output_tokens": 10,
+          "pass": true,
+          "query": "今天北京天气怎么样",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "weather-1",
+          "answer": "上海天气：晴，25°C",
+          "category": "weather",
+          "id": "e-weather-002",
+          "input_tokens": 0,
+          "intent": "weather",
+          "output_tokens": 5,
+          "pass": true,
+          "query": "上海明天天气",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "weather-1",
+          "answer": "广州气温：晴，25°C",
+          "category": "weather",
+          "id": "e-weather-003",
+          "input_tokens": 0,
+          "intent": "weather",
+          "output_tokens": 5,
+          "pass": true,
+          "query": "广州现在气温多少",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "weather-1",
+          "answer": "深圳天气：晴，25°C",
+          "category": "weather",
+          "id": "e-weather-004",
+          "input_tokens": 0,
+          "intent": "weather",
+          "output_tokens": 5,
+          "pass": true,
+          "query": "查一下深圳天气",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "weather-1",
+          "answer": "Tokyo: 晴，25°C",
+          "category": "weather",
+          "id": "e-weather-005",
+          "input_tokens": 0,
+          "intent": "weather",
+          "output_tokens": 2,
+          "pass": true,
+          "query": "weather in Tokyo",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        },
+        {
+          "agent": "general",
+          "answer": "成都天气：晴，25°C，适合出门。",
+          "category": "weather",
+          "id": "e-weather-006",
+          "input_tokens": 0,
+          "intent": "general",
+          "output_tokens": 9,
+          "pass": true,
+          "query": "成都适合出门吗",
+          "state": "completed",
+          "tool_calls": [
+            "get_weather"
+          ],
+          "want_state": "completed"
+        }
+      ]
+    },
+    "router": {
+      "metrics": {
+        "hit_at_1": 0.6182,
+        "mrr": 0.7308,
+        "precision_at_5": 0.4072,
+        "recall_at_5": 0.92,
+        "token_saved_pct_avg": 72.4733
+      },
+      "by_category": {
+        "code": {
+          "case_count": 18,
+          "mrr": 0.8194,
+          "recall_at_5": 1
+        },
+        "file": {
+          "case_count": 14,
+          "mrr": 0.6071,
+          "recall_at_5": 0.8571
+        },
+        "math": {
+          "case_count": 20,
+          "mrr": 0.6792,
+          "recall_at_5": 1
+        },
+        "mixed": {
+          "case_count": 20,
+          "mrr": 0.75,
+          "recall_at_5": 0.925
+        },
+        "weather": {
+          "case_count": 16,
+          "mrr": 0.9688,
+          "recall_at_5": 1
+        },
+        "web": {
+          "case_count": 12,
+          "mrr": 0.4792,
+          "recall_at_5": 0.625
+        }
+      },
+      "case_count": 100,
+      "failures": [
+        {
+          "id": "r-dist-019",
+          "query": "read the file then calculate the average of the numbers inside",
+          "reasons": [
+            "recall@5=0.50（相关 [fs/read_file math/calculator]，实选 [fs/read_file fs/write_file dev/code_review net/get_weather math/add]）"
+          ]
+        },
+        {
+          "id": "r-dist-020",
+          "query": "把我搜索收集的资料整理进 report.docx",
+          "reasons": [
+            "recall@5=0.00（相关 [fs/write_file]，实选 [web/search math/sqrt math/add web/fetch_url]）"
+          ]
+        },
+        {
+          "id": "r-file-006",
+          "query": "读一下 main.go，把里面的TODO都整理到 todo.md",
+          "reasons": [
+            "recall@5=0.00（相关 [fs/read_file fs/write_file]，实选 [web/fetch_url net/get_news math/calculator]）"
+          ]
+        },
+        {
+          "id": "r-file-007",
+          "query": "查看 /var/log/syslog 最后 100 行",
+          "reasons": [
+            "recall@5=0.00（相关 [fs/read_file]，实选 [math/add math/calculator math/sqrt]）",
+            "top1=math/add 期望 fs/read_file"
+          ]
+        },
+        {
+          "id": "r-web-003",
+          "query": "打开 https://example.com 看看内容",
+          "reasons": [
+            "recall@5=0.00（相关 [web/fetch_url]，实选 [math/add math/calculator math/sqrt]）",
+            "top1=math/add 期望 web/fetch_url"
+          ]
+        },
+        {
+          "id": "r-web-005",
+          "query": "帮我查一下 MCP 协议是什么",
+          "reasons": [
+            "recall@5=0.00（相关 [web/search]，实选 [web/fetch_url]）"
+          ]
+        },
+        {
+          "id": "r-web-007",
+          "query": "2026 年 A2A 规范有哪些更新",
+          "reasons": [
+            "recall@5=0.00（相关 [web/search]，实选 [net/get_weather dev/code_review dev/format_code dev/run_tests]）"
+          ]
+        },
+        {
+          "id": "r-web-009",
+          "query": "latest news about AI agents",
+          "reasons": [
+            "recall@5=0.50（相关 [web/search net/get_news]，实选 [net/get_news dev/code_review dev/format_code dev/run_tests]）"
+          ]
+        },
+        {
+          "id": "r-web-011",
+          "query": "download the content of that link",
+          "reasons": [
+            "recall@5=0.00（相关 [web/fetch_url]，实选 [dev/run_tests fs/read_file fs/write_file net/get_news]）"
+          ]
+        }
+      ],
+      "cases": [
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-001",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "帮我审查这段 Python 代码",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-002",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "review this Go snippet for bugs",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-003",
+          "mrr": 1,
+          "packed_tokens": 204,
+          "query": "把这段 Java 代码格式化一下",
+          "recall_at_k": 1,
+          "saved_pct": 59.604,
+          "selected": [
+            "dev/format_code",
+            "web/fetch_url",
+            "dev/code_review",
+            "web/search",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-code-004",
+          "mrr": 0.3333,
+          "packed_tokens": 213,
+          "query": "format my TypeScript file",
+          "recall_at_k": 1,
+          "saved_pct": 57.8218,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "dev/format_code",
+            "net/get_weather",
+            "dev/code_review"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-005",
+          "mrr": 1,
+          "packed_tokens": 164,
+          "query": "跑一下项目的单元测试",
+          "recall_at_k": 1,
+          "saved_pct": 67.5248,
+          "selected": [
+            "dev/run_tests",
+            "web/fetch_url",
+            "dev/code_review",
+            "dev/format_code"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-006",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "run the test suite",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/run_tests",
+            "dev/code_review",
+            "dev/format_code"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-007",
+          "mrr": 1,
+          "packed_tokens": 214,
+          "query": "这段 C++ 代码有 bug 吗",
+          "recall_at_k": 1,
+          "saved_pct": 57.6238,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-008",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "重构这个函数，然后帮我检查有没有引入新问题",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-009",
+          "mrr": 1,
+          "packed_tokens": 204,
+          "query": "code smells in this Ruby method",
+          "recall_at_k": 1,
+          "saved_pct": 59.604,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests",
+            "math/sqrt",
+            "math/add"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-code-010",
+          "mrr": 0.3333,
+          "packed_tokens": 164,
+          "query": "帮我美化这段 HTML 缩进",
+          "recall_at_k": 1,
+          "saved_pct": 67.5248,
+          "selected": [
+            "web/fetch_url",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-011",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "check my Rust code for memory issues",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-code-012",
+          "mrr": 0.3333,
+          "packed_tokens": 123,
+          "query": "pytest 全部跑一遍看有没有挂的",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-013",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "这段代码风格符合规范吗，顺便跑下测试",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/run_tests",
+            "dev/format_code",
+            "dev/code_review"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-code-014",
+          "mrr": 0.5,
+          "packed_tokens": 164,
+          "query": "帮我 lint 一下 JavaScript",
+          "recall_at_k": 1,
+          "saved_pct": 67.5248,
+          "selected": [
+            "web/fetch_url",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 4,
+          "full_tokens": 505,
+          "id": "r-code-015",
+          "mrr": 0.25,
+          "packed_tokens": 205,
+          "query": "gofmt this file",
+          "recall_at_k": 1,
+          "saved_pct": 59.4059,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-016",
+          "mrr": 1,
+          "packed_tokens": 123,
+          "query": "这段 SQL 有注入风险吗",
+          "recall_at_k": 1,
+          "saved_pct": 75.6436,
+          "selected": [
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-017",
+          "mrr": 1,
+          "packed_tokens": 170,
+          "query": "unit tests failing, help me run them",
+          "recall_at_k": 1,
+          "saved_pct": 66.3366,
+          "selected": [
+            "dev/run_tests",
+            "net/get_weather",
+            "dev/code_review",
+            "dev/format_code"
+          ]
+        },
+        {
+          "category": "code",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-code-018",
+          "mrr": 1,
+          "packed_tokens": 164,
+          "query": "提交前把代码格式化、审查、跑测试都做一遍",
+          "recall_at_k": 1,
+          "saved_pct": 67.5248,
+          "selected": [
+            "dev/format_code",
+            "dev/code_review",
+            "dev/run_tests",
+            "fs/write_file"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-001",
+          "mrr": 1,
+          "packed_tokens": 87,
+          "query": "搜索一下今天北京的天气预报",
+          "recall_at_k": 1,
+          "saved_pct": 82.7723,
+          "selected": [
+            "net/get_weather",
+            "web/search"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-dist-002",
+          "mrr": 0.3333,
+          "packed_tokens": 203,
+          "query": "把搜索到的资料写成 markdown 文件",
+          "recall_at_k": 1,
+          "saved_pct": 59.802,
+          "selected": [
+            "web/search",
+            "fs/read_file",
+            "fs/write_file",
+            "math/sqrt",
+            "math/add"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-003",
+          "mrr": 1,
+          "packed_tokens": 213,
+          "query": "读一下这份代码然后帮我审查",
+          "recall_at_k": 1,
+          "saved_pct": 57.8218,
+          "selected": [
+            "dev/code_review",
+            "web/fetch_url",
+            "dev/format_code",
+            "math/calculator",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-dist-004",
+          "mrr": 0.3333,
+          "packed_tokens": 171,
+          "query": "帮我算一下这个月开了几天会",
+          "recall_at_k": 1,
+          "saved_pct": 66.1386,
+          "selected": [
+            "web/fetch_url",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-005",
+          "mrr": 1,
+          "packed_tokens": 218,
+          "query": "weather in Beijing - search and also fetch the meteo page",
+          "recall_at_k": 1,
+          "saved_pct": 56.8317,
+          "selected": [
+            "net/get_weather",
+            "web/search",
+            "web/fetch_url",
+            "math/add",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-006",
+          "mrr": 1,
+          "packed_tokens": 211,
+          "query": "先读配置文件，再搜索里面的参数含义",
+          "recall_at_k": 1,
+          "saved_pct": 58.2178,
+          "selected": [
+            "fs/read_file",
+            "web/search",
+            "fs/write_file",
+            "net/get_weather",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 4,
+          "full_tokens": 505,
+          "id": "r-dist-007",
+          "mrr": 0.25,
+          "packed_tokens": 212,
+          "query": "compute the sha of this file",
+          "recall_at_k": 1,
+          "saved_pct": 58.0198,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-008",
+          "mrr": 1,
+          "packed_tokens": 205,
+          "query": "run tests and write the results to a file",
+          "recall_at_k": 1,
+          "saved_pct": 59.4059,
+          "selected": [
+            "fs/write_file",
+            "dev/run_tests",
+            "fs/read_file",
+            "dev/code_review",
+            "dev/format_code"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-009",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "把天气数据画成图表",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-010",
+          "mrr": 1,
+          "packed_tokens": 214,
+          "query": "审查我写的计算器代码",
+          "recall_at_k": 1,
+          "saved_pct": 57.6238,
+          "selected": [
+            "dev/code_review",
+            "math/calculator",
+            "dev/format_code",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-011",
+          "mrr": 1,
+          "packed_tokens": 81,
+          "query": "translate this error message and search for a fix",
+          "recall_at_k": 1,
+          "saved_pct": 83.9604,
+          "selected": [
+            "web/search",
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-dist-012",
+          "mrr": 0.3333,
+          "packed_tokens": 205,
+          "query": "文件里有多少行代码",
+          "recall_at_k": 1,
+          "saved_pct": 59.4059,
+          "selected": [
+            "dev/format_code",
+            "dev/code_review",
+            "fs/read_file",
+            "fs/write_file",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-013",
+          "mrr": 1,
+          "packed_tokens": 205,
+          "query": "search GitHub for the MCP SDK repo and save the URL",
+          "recall_at_k": 1,
+          "saved_pct": 59.4059,
+          "selected": [
+            "web/search",
+            "web/fetch_url",
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-014",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "sqrt(2) 保留 10 位小数",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/sqrt",
+            "math/add",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 4,
+          "full_tokens": 505,
+          "id": "r-dist-015",
+          "mrr": 0.25,
+          "packed_tokens": 205,
+          "query": "帮我把这段代码的执行结果写进日志文件",
+          "recall_at_k": 1,
+          "saved_pct": 59.4059,
+          "selected": [
+            "dev/format_code",
+            "dev/code_review",
+            "fs/read_file",
+            "fs/write_file",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-016",
+          "mrr": 1,
+          "packed_tokens": 91,
+          "query": "今天的新闻里有没有提到 AI",
+          "recall_at_k": 1,
+          "saved_pct": 81.9802,
+          "selected": [
+            "net/get_news",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-017",
+          "mrr": 1,
+          "packed_tokens": 212,
+          "query": "get me the latest AI headlines",
+          "recall_at_k": 1,
+          "saved_pct": 58.0198,
+          "selected": [
+            "net/get_news",
+            "net/get_weather",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-dist-018",
+          "mrr": 0.5,
+          "packed_tokens": 204,
+          "query": "对比这份代码和上个版本的差异，重点看性能",
+          "recall_at_k": 1,
+          "saved_pct": 59.604,
+          "selected": [
+            "dev/format_code",
+            "dev/code_review",
+            "dev/run_tests",
+            "math/sqrt",
+            "math/add"
+          ]
+        },
+        {
+          "category": "mixed",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-dist-019",
+          "mrr": 1,
+          "packed_tokens": 213,
+          "query": "read the file then calculate the average of the numbers inside",
+          "recall_at_k": 0.5,
+          "saved_pct": 57.8218,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "dev/code_review",
+            "net/get_weather",
+            "math/add"
+          ]
+        },
+        {
+          "category": "mixed",
+          "full_tokens": 505,
+          "id": "r-dist-020",
+          "mrr": 0,
+          "packed_tokens": 162,
+          "query": "把我搜索收集的资料整理进 report.docx",
+          "recall_at_k": 0,
+          "saved_pct": 67.9208,
+          "selected": [
+            "web/search",
+            "math/sqrt",
+            "math/add",
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-001",
+          "mrr": 1,
+          "packed_tokens": 212,
+          "query": "读取 /etc/hosts 文件内容",
+          "recall_at_k": 1,
+          "saved_pct": 58.0198,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-002",
+          "mrr": 1,
+          "packed_tokens": 171,
+          "query": "read the config.yaml file",
+          "recall_at_k": 1,
+          "saved_pct": 66.1386,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_weather",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-003",
+          "mrr": 1,
+          "packed_tokens": 124,
+          "query": "把结果写入 output.txt",
+          "recall_at_k": 1,
+          "saved_pct": 75.4455,
+          "selected": [
+            "fs/write_file",
+            "fs/read_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-file-004",
+          "mrr": 0.5,
+          "packed_tokens": 124,
+          "query": "save this log to result.log",
+          "recall_at_k": 1,
+          "saved_pct": 75.4455,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-file-005",
+          "mrr": 0.3333,
+          "packed_tokens": 214,
+          "query": "打开 README.md 看一下",
+          "recall_at_k": 1,
+          "saved_pct": 57.6238,
+          "selected": [
+            "web/fetch_url",
+            "math/calculator",
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "full_tokens": 505,
+          "id": "r-file-006",
+          "mrr": 0,
+          "packed_tokens": 132,
+          "query": "读一下 main.go，把里面的TODO都整理到 todo.md",
+          "recall_at_k": 0,
+          "saved_pct": 73.8614,
+          "selected": [
+            "web/fetch_url",
+            "net/get_news",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "file",
+          "full_tokens": 505,
+          "id": "r-file-007",
+          "mrr": 0,
+          "packed_tokens": 130,
+          "query": "查看 /var/log/syslog 最后 100 行",
+          "recall_at_k": 0,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-008",
+          "mrr": 1,
+          "packed_tokens": 203,
+          "query": "write \"hello\" to a.txt",
+          "recall_at_k": 1,
+          "saved_pct": 59.802,
+          "selected": [
+            "fs/write_file",
+            "net/get_news",
+            "math/sqrt",
+            "dev/run_tests",
+            "math/add"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-009",
+          "mrr": 1,
+          "packed_tokens": 163,
+          "query": "这个 json 文件里有什么",
+          "recall_at_k": 1,
+          "saved_pct": 67.7228,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "dev/run_tests",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-file-010",
+          "mrr": 0.3333,
+          "packed_tokens": 173,
+          "query": "导出这份报告到 export.md",
+          "recall_at_k": 1,
+          "saved_pct": 65.7426,
+          "selected": [
+            "math/calculator",
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-file-011",
+          "mrr": 1,
+          "packed_tokens": 124,
+          "query": "cat the Dockerfile please",
+          "recall_at_k": 1,
+          "saved_pct": 75.4455,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-file-012",
+          "mrr": 0.5,
+          "packed_tokens": 124,
+          "query": "帮我把配置文件内容展示出来",
+          "recall_at_k": 1,
+          "saved_pct": 75.4455,
+          "selected": [
+            "net/get_news",
+            "fs/read_file",
+            "fs/write_file"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-file-013",
+          "mrr": 0.5,
+          "packed_tokens": 124,
+          "query": "append this line to notes.txt",
+          "recall_at_k": 1,
+          "saved_pct": 75.4455,
+          "selected": [
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "file",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-file-014",
+          "mrr": 0.3333,
+          "packed_tokens": 163,
+          "query": "dump the current settings to settings.json",
+          "recall_at_k": 1,
+          "saved_pct": 67.7228,
+          "selected": [
+            "dev/run_tests",
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-001",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "计算 123 + 456 等于多少",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/calculator",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-002",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "what is 25 * 4",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-003",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "计算 2 的 10 次方",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/calculator",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-004",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "16 的平方根是多少",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/sqrt",
+            "math/add",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-005",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "compute 1024 divided by 8",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 4,
+          "full_tokens": 505,
+          "id": "r-math-006",
+          "mrr": 0.25,
+          "packed_tokens": 212,
+          "query": "帮我算一下 3.14 乘 2",
+          "recall_at_k": 1,
+          "saved_pct": 58.0198,
+          "selected": [
+            "web/fetch_url",
+            "dev/format_code",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-007",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "100 减 37 等于",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-008",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "(123 + 456) * 2 - 100 / 4 的结果",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-009",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "9 的开方",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/calculator",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-010",
+          "mrr": 1,
+          "packed_tokens": 171,
+          "query": "sqrt of 144",
+          "recall_at_k": 1,
+          "saved_pct": 66.1386,
+          "selected": [
+            "math/sqrt",
+            "web/fetch_url",
+            "math/add",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-011",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "7 加 8 再乘 2",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-012",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "把 255 转成二进制再算 1010 和 1100 的按位与",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-013",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "calculate 99 + 1",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-014",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "算式 88/4 等于多少",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-015",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "先算 6 乘 7，再把结果平方根",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/sqrt",
+            "math/add",
+            "math/calculator"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-016",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "2 的 20 次方 power of two",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-017",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "1000000 除以 7 余数是多少",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/calculator",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 3,
+          "full_tokens": 505,
+          "id": "r-math-018",
+          "mrr": 0.3333,
+          "packed_tokens": 171,
+          "query": "帮我把这批数字求和：1,2,3,4,5,6,7,8,9,10",
+          "recall_at_k": 1,
+          "saved_pct": 66.1386,
+          "selected": [
+            "dev/format_code",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-math-019",
+          "mrr": 0.5,
+          "packed_tokens": 130,
+          "query": "minus 15 plus 30 equals",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "math",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-math-020",
+          "mrr": 1,
+          "packed_tokens": 171,
+          "query": "0.1 加 0.2 等于 0.3 吗，帮我精确计算",
+          "recall_at_k": 1,
+          "saved_pct": 66.1386,
+          "selected": [
+            "math/calculator",
+            "dev/format_code",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-001",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "今天北京天气怎么样",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-002",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "上海明天下雨吗",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-003",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "what is the weather in Tokyo",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-004",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "广州今天气温多少度",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-005",
+          "mrr": 1,
+          "packed_tokens": 88,
+          "query": "查一下深圳的天气",
+          "recall_at_k": 1,
+          "saved_pct": 82.5743,
+          "selected": [
+            "net/get_weather",
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-006",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "weather forecast for New York",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-007",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "明天出门需要带伞吗，成都",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-008",
+          "mrr": 1,
+          "packed_tokens": 88,
+          "query": "杭州本周温度变化",
+          "recall_at_k": 1,
+          "saved_pct": 82.5743,
+          "selected": [
+            "net/get_weather",
+            "fs/read_file"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-009",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "is it going to snow in Harbin",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-010",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "西安今天紫外线强吗",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-weather-011",
+          "mrr": 0.5,
+          "packed_tokens": 89,
+          "query": "重庆今天多少摄氏度",
+          "recall_at_k": 1,
+          "saved_pct": 82.3762,
+          "selected": [
+            "net/get_news",
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-012",
+          "mrr": 1,
+          "packed_tokens": 208,
+          "query": "对比北京和上海的天气",
+          "recall_at_k": 1,
+          "saved_pct": 58.8119,
+          "selected": [
+            "net/get_weather",
+            "dev/format_code",
+            "dev/run_tests",
+            "math/add",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-013",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "武汉有雾霾吗",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-014",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "台北今明两天天气",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-015",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "temperature in London right now",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "weather",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-weather-016",
+          "mrr": 1,
+          "packed_tokens": 47,
+          "query": "昆明气候怎么样，适合穿什么",
+          "recall_at_k": 1,
+          "saved_pct": 90.6931,
+          "selected": [
+            "net/get_weather"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-web-001",
+          "mrr": 1,
+          "packed_tokens": 81,
+          "query": "搜索 Go 语言的最新特性",
+          "recall_at_k": 1,
+          "saved_pct": 83.9604,
+          "selected": [
+            "web/search",
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-web-002",
+          "mrr": 1,
+          "packed_tokens": 81,
+          "query": "search for rust async runtime comparison",
+          "recall_at_k": 1,
+          "saved_pct": 83.9604,
+          "selected": [
+            "web/search",
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "web",
+          "full_tokens": 505,
+          "id": "r-web-003",
+          "mrr": 0,
+          "packed_tokens": 130,
+          "query": "打开 https://example.com 看看内容",
+          "recall_at_k": 0,
+          "saved_pct": 74.2574,
+          "selected": [
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-web-004",
+          "mrr": 0.5,
+          "packed_tokens": 213,
+          "query": "fetch the page at https://news.ycombinator.com",
+          "recall_at_k": 1,
+          "saved_pct": 57.8218,
+          "selected": [
+            "net/get_news",
+            "web/fetch_url",
+            "math/add",
+            "math/calculator",
+            "math/sqrt"
+          ]
+        },
+        {
+          "category": "web",
+          "full_tokens": 505,
+          "id": "r-web-005",
+          "mrr": 0,
+          "packed_tokens": 41,
+          "query": "帮我查一下 MCP 协议是什么",
+          "recall_at_k": 0,
+          "saved_pct": 91.8812,
+          "selected": [
+            "web/fetch_url"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-web-006",
+          "mrr": 0.5,
+          "packed_tokens": 122,
+          "query": "crawl this URL and extract the title",
+          "recall_at_k": 1,
+          "saved_pct": 75.8416,
+          "selected": [
+            "web/search",
+            "web/fetch_url",
+            "fs/read_file"
+          ]
+        },
+        {
+          "category": "web",
+          "full_tokens": 505,
+          "id": "r-web-007",
+          "mrr": 0,
+          "packed_tokens": 170,
+          "query": "2026 年 A2A 规范有哪些更新",
+          "recall_at_k": 0,
+          "saved_pct": 66.3366,
+          "selected": [
+            "net/get_weather",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-web-008",
+          "mrr": 1,
+          "packed_tokens": 130,
+          "query": "grab the HTML of my blog homepage",
+          "recall_at_k": 1,
+          "saved_pct": 74.2574,
+          "selected": [
+            "web/fetch_url",
+            "math/calculator",
+            "web/search"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 1,
+          "full_tokens": 505,
+          "id": "r-web-009",
+          "mrr": 1,
+          "packed_tokens": 165,
+          "query": "latest news about AI agents",
+          "recall_at_k": 0.5,
+          "saved_pct": 67.3267,
+          "selected": [
+            "net/get_news",
+            "dev/code_review",
+            "dev/format_code",
+            "dev/run_tests"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 4,
+          "full_tokens": 505,
+          "id": "r-web-010",
+          "mrr": 0.25,
+          "packed_tokens": 162,
+          "query": "帮我检索 wasm 沙箱的资料",
+          "recall_at_k": 1,
+          "saved_pct": 67.9208,
+          "selected": [
+            "math/sqrt",
+            "math/add",
+            "web/fetch_url",
+            "web/search"
+          ]
+        },
+        {
+          "category": "web",
+          "full_tokens": 505,
+          "id": "r-web-011",
+          "mrr": 0,
+          "packed_tokens": 163,
+          "query": "download the content of that link",
+          "recall_at_k": 0,
+          "saved_pct": 67.7228,
+          "selected": [
+            "dev/run_tests",
+            "fs/read_file",
+            "fs/write_file",
+            "net/get_news"
+          ]
+        },
+        {
+          "category": "web",
+          "first_relevant_rank": 2,
+          "full_tokens": 505,
+          "id": "r-web-012",
+          "mrr": 0.5,
+          "packed_tokens": 81,
+          "query": "look up the release notes of wazero",
+          "recall_at_k": 1,
+          "saved_pct": 83.9604,
+          "selected": [
+            "web/fetch_url",
+            "web/search"
+          ]
+        }
+      ]
+    }
+  }
+}

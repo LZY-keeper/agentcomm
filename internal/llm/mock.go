@@ -97,12 +97,17 @@ func findCalculator(tools []types.Tool) *types.Tool {
 }
 
 // extractExpr pulls a likely arithmetic expression out of a prompt for the
-// synthesized tool call (demo only; real LLM does this).
+// synthesized tool call (demo only; real LLM does this). Strips common
+// Chinese/English leading and trailing phrases — the trailing strip was added
+// after the E2E eval dataset caught 「计算 123 + 456 等于多少」 feeding the
+// trailing 「等于多少」 straight into the calculator (parse error).
 func extractExpr(s string) string {
-	s = strings.TrimSpace(s)
-	// strip common Chinese/Math leading phrases
-	for _, pre := range []string{"计算", "算一下", "等于多少", "what is", "compute", "calculate"} {
-		s = strings.TrimPrefix(strings.ToLower(s), pre)
+	s = strings.TrimSpace(strings.ToLower(s))
+	for _, pre := range []string{"计算", "算一下", "帮我算", "what is", "compute", "calculate"} {
+		s = strings.TrimPrefix(s, pre)
 	}
-	return strings.TrimSpace(s)
+	for _, post := range []string{"等于多少", "等于几", "结果是多少", "是多少", "等于", "= ?"} {
+		s = strings.TrimSuffix(strings.TrimSpace(s), post)
+	}
+	return strings.TrimSpace(strings.TrimSuffix(strings.TrimSpace(s), "?"))
 }

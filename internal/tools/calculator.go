@@ -62,12 +62,15 @@ func formatNumber(v float64) string {
 }
 
 func normalizeExpr(s string) string {
-	// allow × ÷ and Chinese operators
-	s = strings.ReplaceAll(s, "×", "*")
-	s = strings.ReplaceAll(s, "÷", "/")
-	s = strings.ReplaceAll(s, "＾", "^") // fullwidth caret
-	s = strings.ReplaceAll(s, "（", "(")
-	s = strings.ReplaceAll(s, "）", ")")
+	// allow × ÷ and Chinese operators（中文算词归一由 E2E 评测暴露：mock
+	// extractExpr 剥前缀后残留「7 减 10」形态，parse 前先归一到符号）
+	repl := [][2]string{
+		{"×", "*"}, {"÷", "/"}, {"＾", "^"}, {"（", "("}, {"）", ")"},
+		{"加", "+"}, {"减", "-"}, {"乘", "*"}, {"除以", "/"}, {"除", "/"},
+	}
+	for _, r := range repl {
+		s = strings.ReplaceAll(s, r[0], r[1])
+	}
 	return s
 }
 

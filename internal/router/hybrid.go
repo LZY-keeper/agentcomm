@@ -76,7 +76,15 @@ func (h *Hybrid) Score(ctx context.Context, query string) ([]types.ScoredTool, e
 		out[i].Capability = cap
 		out[i].Score = h.wDense*dn + h.wSparse*sn + h.wCap*cap
 	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].Score > out[j].Score })
+	// (Score desc, ToolID asc) 全序：上游 AllTools() 遍历 map，并列分时
+	// stable sort 的输入序不定 → 进程间排名/装箱漂移（评测双跑 digest 暴露）。
+	// ToolID 决胜消除之。
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].Score != out[j].Score {
+			return out[i].Score > out[j].Score
+		}
+		return rag.ToolID(out[i].Tool) < rag.ToolID(out[j].Tool)
+	})
 	return out, nil
 }
 

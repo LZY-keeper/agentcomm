@@ -27,6 +27,26 @@ import (
 // e2eGuardedTool 是评测专用的审批门工具（仅存在于 fixture，不进生产注册表）。
 const e2eGuardedTool = "eval_guarded_echo"
 
+// evalStubTools 是评测离线化的桩工具集：weather 真联网（open-meteo）、
+// search/fetch/write 未进 builtin——E2E 确定性要求全部以桩替代（脚本驱动）。
+// get_weather/read_file 仍用真实现的能力签名（Input/OutputTypes）以保持路由行为一致。
+func registerEvalStubs(reg *tools.Registry) {
+	stub := func(name, desc string, output string, result string) {
+		reg.Register(name, desc, types.ToolSchema{Type: "object"},
+			func(ctx context.Context, args map[string]any) (types.ToolResult, error) {
+				return types.ToolResult{Content: []types.ToolContent{{Type: types.ContentText, Text: result}}}, nil
+			}, tools.WithOutputTypes(output))
+	}
+	stub("get_weather", "查询城市天气 weather forecast 温度（评测离线桩）", "weather", "晴，25°C")
+	stub("search", "搜索 web search 检索（评测离线桩）", "url", "A2A 规范要点摘要（离线桩）")
+	stub("fetch_url", "抓取网页 fetch_url html（评测离线桩）", "html", "Example Domain")
+	stub("write_file", "写文件 write_file file（评测离线桩）", "file", "written ok")
+	stub("read_file", "读取文件 read_file file（评测离线桩）", "file", "localhost key=value # agentcomm")
+	stub("code_review", "代码审查 review code（评测离线桩）", "code", "审查完成：无阻塞问题，未发现明显 bug，代码 ok 已 checked")
+	stub("format_code", "格式化代码 format_code code（评测离线桩）", "code", "formatted code ok")
+	stub("run_tests", "运行测试 run_tests code（评测离线桩）", "code", "all passed")
+}
+
 // E2ERunner 端到端评测器。Judge 决定答案维度评分（默认 RuleJudge）。
 type E2ERunner struct {
 	judge Judge
@@ -106,6 +126,7 @@ func (r *E2ERunner) Run(ctx context.Context, cases []E2ECase) *SuiteResult {
 			"case_count":   float64(st.total),
 		}
 	}
+	_ = suite // by_category 仅 success_rate/case_count（E2E 无排名型指标）
 	return suite
 }
 
@@ -135,9 +156,11 @@ func (r *E2ERunner) runCase(ctx context.Context, c E2ECase) e2eCaseResult {
 		provider = llm.NewScripted(c.Query, *c.Script)
 	}
 
-	// 2) 工具注册表：builtin + 评测 guarded 工具
+	// 2) 工具注册表：calculator 真 handler（算术结果可断言）+ 评测桩工具
+	//（离线确定性；weather 真联网、search/fetch/write 未进 builtin）+ 审批门工具
 	reg := tools.NewRegistry()
-	tools.BuiltinInto(reg)
+	tools.RegisterCalculator(reg)
+	registerEvalStubs(reg)
 	reg.Register(e2eGuardedTool, "需要人工审批的回声工具 (eval)", types.ToolSchema{Type: "object"},
 		func(ctx context.Context, args map[string]any) (types.ToolResult, error) {
 			return types.ToolResult{Content: []types.ToolContent{{Type: types.ContentText, Text: "guarded-result"}}}, nil
@@ -145,9 +168,9 @@ func (r *E2ERunner) runCase(ctx context.Context, c E2ECase) e2eCaseResult {
 
 	// 3) 编排器（与生产同构：路由+意图+LB+breaker，全确定性组件）
 	emb := embedding.NewMock(1024)
-	retr := rag.NewRetriever(emb, rag.NewBruteForceIndex(), nil, 5, 0.25)
+	retr := rag.NewRetriever(emb, rag.NewBruteForceIndex(), nil, 5, 0.0)
 	rt := router.New(reg, retr, router.Params{TopK: 5, TokenBudget: 1500, CandidateCap: 50,
-		SimThreshold: 0.25, DenseWeight: 0.6, SparseWeight: 0.3, CapWeight: 0.1}, router.NoopFeedback{})
+		SimThreshold: 0.0, DenseWeight: 0.6, SparseWeight: 0.3, CapWeight: 0.1}, router.NoopFeedback{})
 	if err := rt.Refresh(ctx); err != nil {
 		res.Reasons = append(res.Reasons, "路由器索引失败: "+err.Error())
 		return res

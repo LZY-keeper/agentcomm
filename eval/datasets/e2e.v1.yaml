@@ -1,0 +1,62 @@
+# 端到端任务金标数据集 v1 — 40 例
+# 分布：math 12（原生 mock+真 calculator） / hitl 8（script+审批） /
+#       weather 6 / code 6 / file 4 / general 4（script 路径）
+# resume-after-restart 不入集（单测 TestHITL_ResumeAfterRestart 已覆盖）。
+# 注：意图分类器当前无 web 意图，web 类查询如实期望 general（缺口即迭代素材）。
+version: 1
+suite: e2e
+meta:
+  dataset_version: v1
+  toolset: builtin+eval      # tools.Builtin() + eval_guarded_echo
+cases:
+  # ---------- math：原生 mock 路径（真 calculator 真执行）(12) ----------
+  - {id: e-math-001, category: math, query: "计算 2+3", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["5"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-002, category: math, query: "计算 123 + 456 等于多少", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["579"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-003, category: math, query: "what is 25 * 4", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["100"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-004, category: math, query: "计算 1024 / 8", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["128"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-005, category: math, query: "7 减 10 等于多少", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["-3"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-006, category: math, query: "compute 9 * 9", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["81"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-007, category: math, query: "计算 3.5 + 4.5", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["8"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-008, category: math, query: "100 - 58 = ?", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["42"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-009, category: math, query: "帮我算 11 * 11", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["121"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-010, category: math, query: "calculate 2 ^ 10", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["1024"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-011, category: math, query: "13 加 29 是多少", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["42"], expect_tool_calls: ["calculator"]}
+  - {id: e-math-012, category: math, query: "计算 500 除以 4", expect_state: completed, expect_intent: math, expect_agent: math-1, expect_answer_contains: ["125"], expect_tool_calls: ["calculator"]}
+
+  # ---------- hitl：script + 审批双路 (8) ----------
+  - {id: e-hitl-approve-001, category: hitl, query: "执行需要审批的回声操作", expect_state: completed, expect_answer_contains: ["guarded-result"], expect_tool_calls: ["eval_guarded_echo"], script: {calls: [{tool: eval_guarded_echo, args: {input: hi}}], final: "完成：{result}"}, approval: {verdict: approve, expect_decision: approved}}
+  - {id: e-hitl-approve-002, category: hitl, query: "帮我执行敏感的回声任务", expect_state: completed, expect_answer_contains: ["guarded-result"], expect_tool_calls: ["eval_guarded_echo"], script: {calls: [{tool: eval_guarded_echo, args: {input: data}}], final: "结果：{result}"}, approval: {verdict: approve, expect_decision: approved}}
+  - {id: e-hitl-approve-003, category: hitl, query: "run the guarded echo with payload", expect_state: completed, expect_answer_contains: ["guarded-result"], expect_tool_calls: ["eval_guarded_echo"], script: {calls: [{tool: eval_guarded_echo, args: {input: payload}}], final: "done: {result}"}, approval: {verdict: approve, expect_decision: approved}}
+  - {id: e-hitl-approve-004, category: hitl, query: "需要授权的回声调用，请执行", expect_state: completed, expect_answer_contains: ["guarded-result"], expect_tool_calls: ["eval_guarded_echo"], script: {calls: [{tool: eval_guarded_echo, args: {input: auth}}], final: "已执行：{result}"}, approval: {verdict: approve, expect_decision: approved}}
+  - {id: e-hitl-deny-001, category: hitl, query: "执行需要审批的回声操作", expect_state: completed, expect_answer_contains: ["拒绝"], script: {calls: [{tool: eval_guarded_echo, args: {input: hi}}], final: "处理结果：{result}"}, approval: {verdict: deny, expect_decision: denied}, notes: "deny 后「工具调用被拒绝」回喂，模板含拒绝文案"}
+  - {id: e-hitl-deny-002, category: hitl, query: "帮我执行敏感的回声任务", expect_state: completed, expect_answer_contains: ["拒绝"], script: {calls: [{tool: eval_guarded_echo, args: {input: data}}], final: "处理结果：{result}"}, approval: {verdict: deny, expect_decision: denied}}
+  - {id: e-hitl-deny-003, category: hitl, query: "delete the production database", expect_state: completed, expect_answer_contains: ["拒绝"], script: {calls: [{tool: eval_guarded_echo, args: {input: rm}}], final: "处理结果：{result}"}, approval: {verdict: deny, expect_decision: denied}, notes: 高危操作场景剧本}
+  - {id: e-hitl-deny-004, category: hitl, query: "escalate privileges please", expect_state: completed, expect_answer_contains: ["拒绝"], script: {calls: [{tool: eval_guarded_echo, args: {input: sudo}}], final: "处理结果：{result}"}, approval: {verdict: deny, expect_decision: denied}}
+
+  # ---------- weather：script 路径 (6) ----------
+  - {id: e-weather-001, category: weather, query: "今天北京天气怎么样", expect_state: completed, expect_intent: weather, expect_agent: weather-1, expect_answer_contains: ["晴"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: 北京}}], final: "根据工具结果，北京今天：{result}"}}
+  - {id: e-weather-002, category: weather, query: "上海明天天气", expect_state: completed, expect_intent: weather, expect_agent: weather-1, expect_answer_contains: ["晴"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: 上海}}], final: "上海天气：{result}"}}
+  - {id: e-weather-003, category: weather, query: "广州现在气温多少", expect_state: completed, expect_intent: weather, expect_agent: weather-1, expect_answer_contains: ["25"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: 广州}}], final: "广州气温：{result}"}}
+  - {id: e-weather-004, category: weather, query: "查一下深圳天气", expect_state: completed, expect_intent: weather, expect_agent: weather-1, expect_answer_contains: ["25"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: 深圳}}], final: "深圳天气：{result}"}}
+  - {id: e-weather-005, category: weather, query: "weather in Tokyo", expect_state: completed, expect_intent: weather, expect_agent: weather-1, expect_answer_contains: ["25"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: Tokyo}}], final: "Tokyo: {result}"}}
+  - {id: e-weather-006, category: weather, query: "成都适合出门吗", expect_state: completed, expect_answer_contains: ["晴"], expect_tool_calls: ["get_weather"], script: {calls: [{tool: get_weather, args: {city: 成都}}], final: "成都天气：{result}，适合出门。"}, notes: "隐式天气意图：分类器无此关键词，如实不断言 intent（缺口记录在案）"}
+
+  # ---------- code：script 路径 (6) ----------
+  - {id: e-code-001, category: code, query: "帮我审查这段 Python 代码", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["无阻塞问题"], expect_tool_calls: ["code_review"], script: {calls: [{tool: code_review, args: {code: "def f(): pass"}}], final: "审查结论：{result}"}}
+  - {id: e-code-002, category: code, query: "review this Go snippet", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["ok"], expect_tool_calls: ["code_review"], script: {calls: [{tool: code_review, args: {code: "func main(){}"}}], final: "review: {result}"}}
+  - {id: e-code-003, category: code, query: "把这段代码格式化", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["formatted"], expect_tool_calls: ["format_code"], script: {calls: [{tool: format_code, args: {code: "x=1"}}], final: "已处理：{result}"}}
+  - {id: e-code-004, category: code, query: "跑一下单元测试", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["all passed"], expect_tool_calls: ["run_tests"], script: {calls: [{tool: run_tests, args: {dir: "."}}], final: "测试结果：{result}"}}
+  - {id: e-code-005, category: code, query: "这段代码有 bug 吗", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["未发现明显 bug"], expect_tool_calls: ["code_review"], script: {calls: [{tool: code_review, args: {code: "while(true);"}}], final: "结论：{result}"}}
+  - {id: e-code-006, category: code, query: "check my Rust code", expect_state: completed, expect_intent: code, expect_agent: code-1, expect_answer_contains: ["checked"], expect_tool_calls: ["code_review"], script: {calls: [{tool: code_review, args: {code: "fn main(){}"}}], final: "code {result}"}}
+
+  # ---------- file：script 路径 (4) ----------
+  - {id: e-file-001, category: file, query: "读取 /etc/hosts 文件内容", expect_state: completed, expect_intent: file, expect_agent: file-1, expect_answer_contains: ["localhost"], expect_tool_calls: ["read_file"], script: {calls: [{tool: read_file, args: {path: /etc/hosts}}], final: "文件内容：{result}"}}
+  - {id: e-file-002, category: file, query: "read the config file", expect_state: completed, expect_intent: file, expect_agent: file-1, expect_answer_contains: ["key=value"], expect_tool_calls: ["read_file"], script: {calls: [{tool: read_file, args: {path: "config.ini"}}], final: "content: {result}"}}
+  - {id: e-file-003, category: file, query: "把结果写入 output.txt", expect_state: completed, expect_intent: file, expect_agent: file-1, expect_answer_contains: ["written"], expect_tool_calls: ["write_file"], script: {calls: [{tool: write_file, args: {path: output.txt, content: demo}}], final: "已写入：{result}"}}
+  - {id: e-file-004, category: file, query: "查看 README 内容", expect_state: completed, expect_intent: file, expect_agent: file-1, expect_answer_contains: ["# agentcomm"], expect_tool_calls: ["read_file"], script: {calls: [{tool: read_file, args: {path: README.md}}], final: "README：{result}"}}
+
+  # ---------- general：script/原生兜底路径 (4) ----------
+  - {id: e-general-001, category: general, query: "你好，介绍一下你自己", expect_state: completed, expect_intent: general, expect_answer_contains: ["mock"], notes: 无工具闲聊，原生 mock 回显路径}
+  - {id: e-general-002, category: general, query: "今天吃什么好呢", expect_state: completed, expect_intent: general, expect_answer_contains: ["mock"], notes: 无工具闲聊}
+  - {id: e-general-003, category: general, query: "搜索 A2A 规范并总结要点", expect_state: completed, expect_answer_contains: ["A2A"], expect_tool_calls: ["search"], script: {calls: [{tool: search, args: {q: "A2A spec"}}], final: "关于 A2A：{result}"}, notes: "web 意图缺口：分类器无 web，落地 general（如实记录）"}
+  - {id: e-general-004, category: general, query: "fetch example.com 的标题", expect_state: completed, expect_answer_contains: ["Example"], expect_tool_calls: ["fetch_url"], script: {calls: [{tool: fetch_url, args: {url: "https://example.com"}}], final: "标题：{result}"}, notes: "同上：web 意图缺口"}
