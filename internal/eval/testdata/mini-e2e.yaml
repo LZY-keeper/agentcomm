@@ -1,0 +1,35 @@
+version: 1
+suite: e2e
+meta:
+  dataset_version: mini
+  toolset: builtin+eval
+cases:
+  - id: e-math-001
+    category: math
+    query: "计算 2+3"
+    expect_state: completed
+    expect_intent: math
+    expect_agent: math-1
+    expect_answer_contains: ["5"]
+    expect_tool_calls: ["calculator"]
+  - id: e-weather-001
+    category: weather
+    query: "今天北京天气怎么样"
+    expect_state: completed
+    expect_intent: weather
+    expect_agent: weather-1
+    expect_answer_contains: ["天气"]
+    expect_tool_calls: ["get_weather"]
+    script:
+      calls: [{tool: get_weather, args: {city: 北京}}]
+      final: "根据工具结果，北京天气：{result}"
+  - id: e-hitl-approve-001
+    category: hitl
+    query: "执行需要审批的回声操作"
+    expect_state: completed
+    expect_answer_contains: ["guarded-result"]
+    expect_tool_calls: ["eval_guarded_echo"]
+    script:
+      calls: [{tool: eval_guarded_echo, args: {input: hi}}]
+      final: "完成：{result}"
+    approval: {verdict: approve, expect_decision: approved}

@@ -1,0 +1,28 @@
+version: 1
+suite: router
+meta:
+  dataset_version: mini
+  toolset: demo12
+cases:
+  - id: r-math-001
+    category: math
+    difficulty: easy
+    query: "计算 123 + 456 等于多少"
+    relevant_tools: ["math/calculator"]
+    expect_top1: math/calculator
+  - id: r-weather-001
+    category: weather
+    difficulty: easy
+    query: "今天北京天气怎么样"
+    relevant_tools: ["net/get_weather"]
+  - id: r-code-001
+    category: code
+    difficulty: easy
+    query: "帮我审查这段 Python 代码"
+    relevant_tools: ["dev/code_review"]
+  - id: r-dist-001
+    category: mixed
+    difficulty: distractor
+    query: "搜索一下今天北京的天气预报"
+    relevant_tools: ["net/get_weather", "web/search"]
+    notes: "二义查询，双工具召回才算命中"
