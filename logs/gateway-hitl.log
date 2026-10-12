@@ -1,0 +1,9 @@
+{"time":"2026-09-23T13:28:39.3007183+08:00","level":"INFO","msg":"agentcomm gateway starting (v3)","version":"3.0.0-dev","config":"llm=mock/mock-small embed=mock/mock-1024 router(budget=1500,topk=5) lb=least_response_time redis=\"\" store=auto govern(keys=false,loopback=true)"}
+{"time":"2026-09-23T13:28:39.3125676+08:00","level":"WARN","msg":"tracer init failed (no-op)","err":"conflicting Schema URL: https://opentelemetry.io/schemas/1.43.0 and https://opentelemetry.io/schemas/1.26.0"}
+{"time":"2026-09-23T13:28:39.3130879+08:00","level":"INFO","msg":"governance disabled (no keys configured; set GOV_KEYS or GOV_KEYS_FILE)"}
+{"time":"2026-09-23T13:28:39.3130879+08:00","level":"INFO","msg":"playground + gateway listening","addr":":8080","endpoints":["/","/api/chat","/api/tasks","/a2a/","/mcp","/healthz","/metrics"]}
+{"time":"2026-09-23T13:28:45.3603942+08:00","level":"DEBUG","msg":"approval hook fired","task":"6324347e7c8c865869b7109b8833f359","tool":"calculator"}
+{"time":"2026-09-23T13:28:45.3603942+08:00","level":"INFO","msg":"tool parked for approval","task":"6324347e7c8c865869b7109b8833f359","tool":"calculator"}
+{"time":"2026-09-23T13:28:47.6148095+08:00","level":"DEBUG","msg":"tool call","tool":"calculator","err":false}
+{"time":"2026-09-23T13:29:05.7968802+08:00","level":"DEBUG","msg":"approval hook fired","task":"051da6f4aeadb4aacd14f6768f12f340","tool":"calculator"}
+{"time":"2026-09-23T13:29:05.7968802+08:00","level":"INFO","msg":"tool parked for approval","task":"051da6f4aeadb4aacd14f6768f12f340","tool":"calculator"}

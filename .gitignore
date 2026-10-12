@@ -1,0 +1,14 @@
+/bin/
+/dist/
+*.exe
+*.test
+*.out
+.coverage
+.idea/
+.vscode/
+
+# 评测报告：仅基线与 latest 进库（PR diff 评审），历史目录不入库
+eval/reports/*
+!eval/reports/baseline/
+!eval/reports/latest/
+!eval/reports/README.md

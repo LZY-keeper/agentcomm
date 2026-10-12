@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>agentcomm · 智能 Agent 网关 Playground</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2a313c; --txt:#e6edf3;
+    --muted:#8b949e; --accent:#58a6ff; --green:#3fb950; --amber:#d29922; --red:#f85149;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--txt);height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--panel)}
+  header h1{font-size:16px;margin:0;font-weight:600}
+  header .sub{color:var(--muted);font-size:12px}
+  .badge{font-family:var(--mono);font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:10px;color:var(--accent)}
+  main{flex:1;display:grid;grid-template-columns:1fr 380px;min-height:0}
+  .chat{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--border)}
+  .msgs{flex:1;overflow:auto;padding:20px}
+  .msg{margin-bottom:16px;max-width:80%}
+  .msg.user{margin-left:auto;text-align:right}
+  .bubble{display:inline-block;padding:10px 14px;border-radius:12px;background:var(--panel2);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+  .msg.user .bubble{background:#1f3a5f}
+  .msg.agent .bubble{border:1px solid var(--border)}
+  .composer{display:flex;gap:8px;padding:14px;border-top:1px solid var(--border);background:var(--panel)}
+  .composer textarea{flex:1;resize:none;background:var(--panel2);border:1px solid var(--border);border-radius:8px;color:var(--txt);padding:10px;font-size:14px;font-family:inherit;max-height:120px}
+  .composer button{background:var(--accent);color:#001;border:0;border-radius:8px;padding:0 18px;font-weight:600;cursor:pointer}
+  .composer button:disabled{opacity:.5;cursor:default}
+  aside{overflow:auto;padding:16px;background:var(--bg)}
+  aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 8px}
+  aside .empty{color:var(--muted);font-size:13px;padding:20px 0;text-align:center}
+  .kv{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border)}
+  .kv span:first-child{color:var(--muted)}
+  .kv span:last-child{font-family:var(--mono)}
+  .tool{font-size:12px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;font-family:var(--mono)}
+  .tool .nm{color:var(--accent)} .tool .sc{float:right;color:var(--green)}
+  .bar{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:4px 0}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--amber))}
+  .bar.packed > i{background:linear-gradient(90deg,var(--green),#2ea043)}
+  .save{color:var(--green);font-family:var(--mono);font-size:13px;font-weight:600}
+  .pill{font-size:11px;padding:2px 7px;border-radius:9px;background:var(--panel2);border:1px solid var(--border);color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>agentcomm · 智能 Agent 网关</h1>
+  <span class="sub">token 预算感知的 MCP 工具路由引擎</span>
+  <span style="flex:1"></span>
+  <span class="badge" id="prov">…</span>
+  <span class="badge" id="ver">v?</span>
+</header>
+<main>
+  <section class="chat">
+    <div class="msgs" id="msgs">
+      <div class="msg agent"><div class="bubble">你好，我是超级 Agent。试试：<b>计算 123+456</b> · <b>今天北京天气</b> · <b>统计这段文字的词数</b>（右侧会展示路由决策与 token 节省）。</div></div>
+    </div>
+    <form class="composer" id="form">
+      <textarea id="input" rows="1" placeholder="向超级 Agent 提问…" autocomplete="off"></textarea>
+      <button id="send" type="submit">发送</button>
+    </form>
+  </section>
+  <aside id="side">
+    <div class="empty">路由决策将在这里展示：意图识别、命中 Agent、混合检索工具、token 装箱节省、工具调用…</div>
+  </aside>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const side = $('#side');
+let busy = false;
+let currentTask = null;
+
+async function init(){
+  try{
+    const h = await fetch('/api/health').then(r=>r.json());
+    $('#ver').textContent = 'v'+(h.version||'?');
+    const m = await fetch('/api/meta').then(r=>r.json()).catch(()=>({}));
+    if(m.provider) $('#prov').textContent = 'LLM:'+m.provider+' / Embed:'+m.embedding;
+  }catch(e){}
+}
+
+$('#form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  if(busy) return;
+  const q = $('#input').value.trim();
+  if(!q) return;
+  $('#input').value=''; $('#input').style.height='auto';
+  addMsg('user', q);
+  const agentBubble = addMsg('agent', '');
+  busy=true; $('#send').disabled=true;
+  side.innerHTML = '<div class="empty">思考中…</div>';
+  try{
+    const resp = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:q, session:'web'})});
+    const reader = resp.body.getReader(); const dec=new TextDecoder();
+    let buf=''; let text='';
+    while(true){
+      const {value,done} = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, {stream:true});
+      let idx;
+      while((idx=buf.indexOf('\n\n'))>=0){
+        const frame = buf.slice(0,idx); buf=buf.slice(idx+2);
+        const ev = parseSSE(frame);
+        if(ev.event==='decision') renderDecision(ev.data);
+        else if(ev.event==='token'){ text += ev.data.text||''; agentBubble.textContent = text; scrollDown(); }
+        else if(ev.event==='input_required'){ renderApproval(ev.data.task_id); }
+        else if(ev.event==='done'){ break; }
+      }
+    }
+  }catch(err){ agentBubble.textContent = '[错误] '+err; }
+  busy=false; $('#send').disabled=false;
+});
+
+function parseSSE(frame){
+  let event='message', data='{}';
+  for(const line of frame.split('\n')){
+    if(line.startsWith('event:')) event=line.slice(6).trim();
+    else if(line.startsWith('data:')) data=line.slice(5).trim();
+  }
+  try{ return {event, data:JSON.parse(data)}; }catch{ return {event,data:{}}; }
+}
+
+function renderApproval(taskId){
+  side.innerHTML = `
+    <h2>⚠ 需要人工审批</h2>
+    <div class="kv"><span>task</span><span>${taskId}</span></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="ap" style="flex:1;background:var(--green);color:#03210a;border:0;border-radius:8px;padding:10px;font-weight:600;cursor:pointer">批准执行</button>
+      <button id="dn" style="flex:1;background:var(--red);color:#2d0503;border:0;border-radius:8px;padding:10px;font-weight:600;cursor:pointer">拒绝</button>
+    </div>
+    <div id="apmsg" style="color:var(--muted);font-size:12px;margin-top:8px"></div>`;
+  $('#ap').onclick = ()=>decide(taskId,'approve');
+  $('#dn').onclick = ()=>decide(taskId,'deny');
+}
+async function decide(taskId, decision){
+  try{
+    const r = await fetch(`/api/tasks/${taskId}/approval`, {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({decision, by:'playground'})});
+    const j = await r.json();
+    $('#apmsg').textContent = j.resumed ? '已'+(decision==='approve'?'批准':'拒绝')+'，任务继续…' : ('失败: '+(j.error||''));
+    if(j.resumed){ $('#ap').disabled = $('#dn').disabled = true; }
+  }catch(e){ $('#apmsg').textContent = '错误: '+e; }
+}
+
+function addMsg(role, text){
+  const d=document.createElement('div'); d.className='msg '+role;
+  const b=document.createElement('div'); b.className='bubble'; b.textContent=text;
+  d.appendChild(b); $('#msgs').appendChild(d); scrollDown();
+  return b;
+}
+function scrollDown(){ const m=$('#msgs'); m.scrollTop=m.scrollHeight; }
+
+function renderDecision(d){
+  const pct=d.token_saved_pct||0;
+  if(d.task_id){ currentTask=d.task_id; }
+  let tools=(d.selected_tools||[]).map(t=>`<div class="tool"><span class="nm">${t.tool.server_id}/${t.tool.name}</span><span class="sc">fused ${t.score.toFixed(2)}</span><br><span style="color:var(--muted)">dense ${t.dense.toFixed(2)} · bm25 ${t.sparse.toFixed(2)} · cap ${t.capability.toFixed(2)}</span></div>`).join('');
+  let calls=(d.tool_calls||[]).map(c=>`<span class="pill">${c.tool_name}</span>`).join(' ')||'<span style="color:var(--muted)">无</span>';
+  side.innerHTML=`
+    ${d.task_id?`<div class="kv"><span>task</span><span style="font-size:11px">${d.task_id}</span></div>`:''}
+    <h2>意图识别</h2>
+    <div class="kv"><span>intent</span><span>${d.intent} (${(d.intent_score||0).toFixed(2)})</span></div>
+    <div class="kv"><span>routed agent</span><span>${d.agent.id}</span></div>
+    <h2>工具选择（混合检索 + token 背包）</h2>
+    <div class="kv"><span>候选工具</span><span>${d.candidate_tools}</span></div>
+    ${tools}
+    <h2>Token 预算装箱</h2>
+    <div class="kv"><span>全量注入</span><span>${d.full_token_size} tok</span></div>
+    <div class="bar"><i style="width:100%"></i></div>
+    <div class="kv"><span>装箱后</span><span>${d.packed_token_size} tok</span></div>
+    <div class="bar packed"><i style="width:${Math.min(100,d.packed_token_size/(d.full_token_size||1)*100)}%"></i></div>
+    <div class="save">节省 ${d.token_saved} tok（${pct.toFixed(1)}%）</div>
+    <h2>执行</h2>
+    <div class="kv"><span>工具调用</span><span>${calls}</span></div>
+    <div class="kv"><span>路由延时</span><span>${(d.latency_ms||0).toFixed(1)} ms</span></div>
+    ${d.trace_id?`<div class="kv"><span>trace</span><span>${d.trace_id}</span></div>`:''}
+  `;
+}
+
+$('#input').addEventListener('input', e=>{ e.target.style.height='auto'; e.target.style.height=Math.min(e.target.scrollHeight,120)+'px'; });
+init();
+</script>
+</body>
+</html>

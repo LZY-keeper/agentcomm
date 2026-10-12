@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  gateway:
+    build: ..
+    image: agentcomm:3
+    command: ["/app/bin/gateway"]
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=info
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-mock}
+      - QWEN_API_KEY=${QWEN_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - ROUTER_TOKEN_BUDGET=${ROUTER_TOKEN_BUDGET:-1500}
+      - ROUTER_TOP_K=${ROUTER_TOP_K:-5}
+      # v3: durable tasks + HITL approvals survive restarts via redis
+      - REDIS_ADDR=redis:6379
+      - STORE_BACKEND=redis
+      # v3: governance (uncomment and provision keys to enable auth/quota)
+      # - GOV_KEYS_FILE=/app/keys.json
+      # - GOV_ALLOW_LOOPBACK=false
+      - TOOLS_REQUIRE_APPROVAL=${TOOLS_REQUIRE_APPROVAL:-}
+      - PUBLIC_URL=${PUBLIC_URL:-}
+    depends_on: [redis]
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+  registry:
+    image: agentcomm:3
+    command: ["/app/bin/registry"]
+    ports:
+      - "8500:8500"
+  math-agent:
+    image: agentcomm:3
+    command: ["/app/bin/agent-math"]
+    environment:
+      - AGENT_PORT=5001
+      - REGISTRY_URL=http://registry:8500
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+    ports:
+      - "5001:5001"
+    depends_on: [registry]
