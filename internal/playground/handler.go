@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"context"
@@ -26,16 +28,21 @@ var webFS embed.FS
 // Handler wires the playground HTTP routes. v3: chat runs through the Hub so
 // every exchange is a durable task (state + approval visible in the panel).
 type Handler struct {
-	orch    *orchestrator.Orchestrator
-	hub     *orchestrator.Hub
-	metrics *obs.Metrics
-	version string
-	meta    map[string]string
+	orch       *orchestrator.Orchestrator
+	hub        *orchestrator.Hub
+	metrics    *obs.Metrics
+	version    string
+	meta       map[string]string
+	evalReportDir string // v3.1: serves eval/reports/latest/report.json (read-only)
 }
 
 func NewHandler(hub *orchestrator.Hub, orch *orchestrator.Orchestrator, metrics *obs.Metrics, version string, meta map[string]string) *Handler {
 	return &Handler{orch: orch, hub: hub, metrics: metrics, version: version, meta: meta}
 }
+
+// SetEvalReportDir points the /api/eval/report reader at the reports root
+// (wired from config.Eval.ReportDir; empty disables the endpoint).
+func (h *Handler) SetEvalReportDir(dir string) { h.evalReportDir = dir }
 
 // Mount registers UI + API routes on the given mux.
 func (h *Handler) Mount(mux *http.ServeMux) {
@@ -45,6 +52,28 @@ func (h *Handler) Mount(mux *http.ServeMux) {
 	mux.HandleFunc("/api/chat", h.handleChat)
 	mux.HandleFunc("/api/health", h.handleHealth)
 	mux.HandleFunc("/api/meta", h.handleMeta)
+	mux.HandleFunc("/api/eval/report", h.handleEvalReport)
+}
+
+// handleEvalReport serves the latest eval report (read-only; reports are
+// produced by `make eval` / CI, never from a UI button — keeps the server
+// stateless w.r.t. evaluation). 404 with a hint when no report exists yet.
+func (h *Handler) handleEvalReport(w http.ResponseWriter, _ *http.Request) {
+	if h.evalReportDir == "" {
+		writeJSON(w, http.StatusNotFound, map[string]any{"available": false, "hint": "评测报告目录未配置（EVAL_REPORT_DIR）"})
+		return
+	}
+	b, err := os.ReadFile(filepath.Join(h.evalReportDir, "latest", "report.json"))
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]any{"available": false, "hint": "运行 make eval 生成评测报告"})
+		return
+	}
+	var report any
+	if err := json.Unmarshal(b, &report); err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]any{"available": false, "hint": "报告解析失败"})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"available": true, "report": report})
 }
 
 func (h *Handler) handleMeta(w http.ResponseWriter, _ *http.Request) {

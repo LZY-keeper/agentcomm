@@ -146,6 +146,7 @@ func main() {
 	pg := playground.NewHandler(hub, orch, metrics, Version, map[string]string{
 		"llm": cfg.LLM.Provider, "embedding": cfg.Embedding.Provider,
 	})
+	pg.SetEvalReportDir(cfg.Eval.ReportDir) // v3.1: playground 评测报告面板（只读）
 	mux := http.NewServeMux()
 	pg.Mount(mux)
 	taskapi.NewHandler(hub, taskStore, gate).Mount(mux)

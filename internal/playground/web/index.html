@@ -50,6 +50,7 @@
   <span style="flex:1"></span>
   <span class="badge" id="prov">…</span>
   <span class="badge" id="ver">v?</span>
+  <button id="evalBtn" class="badge" style="cursor:pointer;background:none">📊 评测报告</button>
 </header>
 <main>
   <section class="chat">
@@ -179,6 +180,52 @@ function renderDecision(d){
 }
 
 $('#input').addEventListener('input', e=>{ e.target.style.height='auto'; e.target.style.height=Math.min(e.target.scrollHeight,120)+'px'; });
+
+// ===== 评测报告面板（只读；报告由 make eval / CI 产出，latest/report.json）=====
+let lastDecisionHTML = null; // 切换回路由视图时还原
+$('#evalBtn').onclick = async ()=>{
+  if(side.dataset.view === 'eval'){ // 再点一次还原路由视图
+    side.dataset.view = '';
+    if(lastDecisionHTML !== null) side.innerHTML = lastDecisionHTML;
+    else side.innerHTML = '<div class="empty">路由决策将在这里展示…</div>';
+    return;
+  }
+  side.dataset.view = 'eval';
+  side.innerHTML = '<div class="empty">加载评测报告…</div>';
+  try{
+    const j = await fetch('/api/eval/report').then(r=>r.json());
+    if(!j.available){ side.innerHTML = `<div class="empty">${j.hint||'暂无评测报告'}</div>`; return; }
+    renderEvalReport(j.report);
+  }catch(e){ side.innerHTML = '<div class="empty">加载失败: '+e+'</div>'; }
+};
+
+function renderEvalReport(rep){
+  const suites = Object.entries(rep.suites||{});
+  const suiteHTML = suites.map(([name, s])=>{
+    const rows = Object.entries(s.metrics||{}).map(([k,v])=>{
+      const good = (k.includes('rate')||k.includes('recall')||k.includes('mrr')||k.includes('hit')||k.includes('saved')) ? v>=0.5 : null;
+      const pill = good===null?'':(good?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--amber)">△</span>');
+      return `<div class="kv"><span>${k}</span><span>${v}${good===null?'':' '+pill}</span></div>`;
+    }).join('');
+    const cats = Object.entries(s.by_category||{}).map(([c,v])=>{
+      const sr = v.success_rate!==undefined ? `success=${(v.success_rate*100).toFixed(0)}%` : `recall@5=${(v.recall_at_5*100).toFixed(0)}%`;
+      return `<span class="pill">${c}: ${sr} (n=${v.case_count})</span>`;
+    }).join(' ');
+    const fails = (s.failures||[]).slice(0,10).map(f=>`<div class="tool"><span style="color:var(--red)">✗ ${f.id}</span> ${f.query}</div>`).join('');
+    return `<h2>${name}（${s.case_count} 例，失败 ${(s.failures||[]).length}）</h2>${rows}
+      <div style="margin:8px 0">${cats}</div>${fails}`;
+  }).join('');
+  const meta = rep.meta||{};
+  side.innerHTML = `
+    <h2>评测报告（v3.1 评测子系统）</h2>
+    <div class="kv"><span>生成时间</span><span style="font-size:11px">${meta.generated_at||'-'}</span></div>
+    <div class="kv"><span>提交</span><span style="font-size:11px">${meta.commit||'-'}</span></div>
+    <div class="kv"><span>digest</span><span style="font-size:11px">${rep.digest||'-'}</span></div>
+    <div class="kv"><span>embedding / llm / judge</span><span style="font-size:11px">${meta.embedding} / ${meta.llm} / ${meta.judge}</span></div>
+    ${suiteHTML}
+    <div style="color:var(--muted);font-size:11px;margin-top:10px">报告由 make eval / CI 产出（只读）。基线对比与回归门禁：make eval-gate。</div>`;
+}
+
 init();
 </script>
 </body>

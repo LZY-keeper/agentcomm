@@ -25,6 +25,11 @@ type Config struct {
 	Store      StoreConfig   // task/session persistence (v3)
 	Govern     GovernConfig  // auth/quota/budget/audit (v3)
 	Tools      ToolsConfig   // tool-execution safety limits (v3)
+	Eval       EvalConfig    // eval report serving (v3.1)
+}
+
+type EvalConfig struct {
+	ReportDir string `env:"EVAL_REPORT_DIR"` // default eval/reports; playground reads <dir>/latest/report.json
 }
 
 type GatewayConfig struct {
@@ -200,6 +205,9 @@ func Load() Config {
 			MaxResultBytes:   envInt("TOOL_MAX_RESULT_BYTES", 16384),
 			MaxFileBytes:     envInt("TOOL_MAX_FILE_BYTES", 1048576),
 			ApprovalDefaults: splitCSV(env("TOOLS_REQUIRE_APPROVAL", "")),
+		},
+		Eval: EvalConfig{
+			ReportDir: env("EVAL_REPORT_DIR", "eval/reports"),
 		},
 	}
 	if c.LLM.Model == "" {
