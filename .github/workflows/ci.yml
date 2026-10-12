@@ -1,0 +1,65 @@
+name: ci
+
+# agentcomm v3.1 质量门禁链：lint → test → eval-gate → docker
+# eval-gate 是核心：对库内基线 eval/reports/baseline/report.json 跑回归门禁，
+# 任何指标回退超阈值（默认 2pp）即失败——评测不是"跑给自己看的报表"，是门禁。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1" # 每周一重验（不自动更新基线；基线更新走 PR diff 评审）
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - run: go vet ./...
+      - run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - run: go test ./...
+
+  eval-gate:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 完整历史：报告记录 commit
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+      - name: Run eval regression gate
+        run: |
+          go run ./cmd/eval -suite all -out eval/reports/ci \
+            -baseline eval/reports/baseline/report.json -format markdown
+      - name: Upload eval report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: |
+            eval/reports/ci/**/report.json
+            eval/reports/latest/report.md
+          retention-days: 90
+
+  docker:
+    needs: [eval-gate] # 镜像只在评测门禁通过后构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t agentcomm:ci .

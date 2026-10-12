@@ -96,9 +96,12 @@ make down
 ## 8. 测试与检查
 
 ```bash
-make test            # go test ./... —— 路由引擎/背包/熔断/混合检索/编排端到端/求值器
+make test            # go test ./... —— 路由引擎/背包/熔断/混合检索/编排端到端/求值器 + 评测元测试
 make vet             # go vet
-make bench-router    # 路由引擎量化
+make bench-router    # 路由引擎量化（6 条 smoke：token 节省 + recall@5/MRR）
+make eval            # 完整评测（140 例金标：router 100 + e2e 40）→ eval/reports/
+make eval-gate       # 评测回归门禁（对比 baseline，指标回退 exit 1，CI 同款）
+make eval-baseline   # 重建基线（git diff report.json 逐指标评审）
 ```
 
 ## 9. 关键配置（环境变量）
@@ -114,6 +117,7 @@ make bench-router    # 路由引擎量化
 | `BREAKER_FAIL_THRESHOLD` / `BREAKER_OPEN_SECS` | 5 / 30 | 熔断器 |
 | `METRICS_ADDR` | `:9090` | （与 HTTP 共址时走 /metrics） |
 | `OTLP_ENDPOINT` | — | OTel trace 导出（留空则 trace 输出到日志） |
+| `EVAL_REPORT_DIR` | `eval/reports` | 评测报告根目录；playground 读 `<dir>/latest/report.json`（只读） |
 
 ## 10. 常见问题
 
@@ -167,3 +171,41 @@ GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$KEYHASH:tenant-a:5:10:200000|read_fil
 ```bash
 REDIS_ADDR=127.0.0.1:6379 make run   # 审批任务跨重启可恢复（启动时自动 RecoverPending）
 ```
+
+## 12. 评测体系（v3.1：金标集 / 报告 / 回归门禁）
+
+「agent 项目没有评测系统就是玩具」——v3.1 补齐这一环。目录约定见 `eval/reports/README.md`。
+
+### 构成
+
+| 组件 | 位置 | 说明 |
+|------|------|------|
+| 路由金标集 | `eval/datasets/router.v1.yaml` | 100 例「查询→期望工具集」，中英 6:4，含 distractor 干扰例 |
+| E2E 金标集 | `eval/datasets/e2e.v1.yaml` | 40 例端到端任务（数学/HITL 审批双路/脚本化路径） |
+| 指标 | `internal/eval/metrics.go` | recall@k / precision@k / MRR / hit@1 / token 节省；E2E：成功率/终态/答案/工具轨迹/意图 |
+| 报告 | `eval/reports/` | 版本化 JSON+Markdown；`StableDigest`（metrics 子树 sha256）双跑一致可验证 |
+| 门禁 | `eval/thresholds.yaml` + `internal/eval/gate.go` | floor 绝对红线 + 相对基线最大跌幅（默认 2pp），CI exit 1 |
+
+### 确定性保证（评测可复现的前提）
+
+- mock LLM/embedding 离线运行（FNV-1a 确定性哈希，同文本同向量）；评测禁用 Beta bandit（NoopFeedback）；
+- hybrid 排序 (Score desc, ToolID asc) 全序决胜——消除 map 遍历序导致的并列分漂移（该缺陷即由评测双跑 digest 不一致暴露后修复）；
+- 门禁只比较 metrics 子树：时间戳/延迟不参与；`EVAL_REPORT_DIR` 只读暴露给 playground。
+
+### 首基线实测（2026-10，12 工具联邦 / 140 例）
+
+| 指标 | 实测 |
+|------|------|
+| router recall@5 | 0.92 |
+| router MRR | 0.73 |
+| router hit@1 | 0.62 |
+| router token 节省均值 | 72.5% |
+| e2e success_rate | 1.00（40 例，含 HITL approve/deny 双路） |
+| e2e intent_accuracy | 1.00（29 例断言 intent） |
+
+### 评测驱动的真实修复（面试讲点）
+
+1. capability/intent 关键词词典同义词缺口（「摄氏度/下雨/带伞/save/dump」未映射）→ recall@5 从 0.685 迭代到 0.92；
+2. mock extractExpr 只剥前缀不剥中文后缀，「123 + 456 等于多少」把「等于多少」喂进 calculator 解析失败；
+3. calculator 不认中文算词（「7 减 10」）→ normalizeExpr 归一；
+4. hybrid 并列分受 map 遍历序影响 → 排序加 ToolID 决胜，双跑 digest 由漂移变为一致。

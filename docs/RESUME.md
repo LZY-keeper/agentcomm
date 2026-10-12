@@ -32,9 +32,12 @@ MCP/A2A 成为事实标准后，企业 AI 落地的痛点不止"工具多 token 
 - 审计参数脱敏（password/token/secret/api_key）、loopback 豁免可关且不信任 XFF；
 - 依赖 API 漂移修复（wazero 模块路径、OTel SDK），默认离线 mock 全链路可跑。
 
-## 沿承 v2 的量化亮点（`make bench-router` 可现场复现）
-- 工具选择 token 占用 **↓70%+**（0/1 背包装箱 vs 全量注入）；
-- 混合检索（dense⊕BM25⊕能力图）召回/精度优于单一稠密；
+## 量化亮点（v3.1 评测子系统背书，`make eval` 可现场复现）
+- 工具选择 token 占用 **↓72.5%**（0/1 背包装箱 vs 全量注入，100 例金标均值）；
+- 混合检索质量：**recall@5 = 0.92 / MRR = 0.73**（100 例中英双语金标，含 distractor 干扰例）；
+- E2E 任务成功率 **100%**（40 例金标，覆盖 HITL 审批批准/拒绝双路）；
+- **GitHub Actions 评测回归门禁**：每次提交对版本化基线强制复验，指标回退超 2pp 即 fail；报告含 StableDigest（双跑一致性可验证）；
+- 评测驱动修复 4 个真实缺陷（capability/intent 词典缺口、calculator 中文算词、hybrid 并列分不确定性）——"评测不是报表，是抓 bug 的";
 - Prometheus 业务指标 + OTel 追踪 + 任务级 token 计量（预算执法依据）。
 
 ## 面试深挖点（v3 新增）

@@ -5,6 +5,8 @@
 > 限流 / 预算 / 审计 / 工具权限）**、**2026 协议对齐（A2A v1.0 卡片签名、MCP
 > 2025-11-25/2026-07-28 协商、anti-rug-pull 工具指纹）**。
 
+[![ci](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+
 A **governance & routing layer** between LLM applications and a federation of
 agents (A2A) + MCP tools. Three pillars + two horizontal layers:
 
@@ -55,9 +57,18 @@ GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$KEYHASH:tenant-a:5:10:200000" make ru
 REDIS_ADDR=127.0.0.1:6379 make run
 ```
 
+### 评测体系（v3.1）
+
+```bash
+make eval          # 140 例金标（router 100 + e2e 40）：recall@5=0.92 / MRR=0.73 / token ↓72.5% / e2e 100%
+make eval-gate     # 回归门禁：对比基线，指标回退超 2pp 即 exit 1（CI 强制）
+make eval-baseline # 重建基线（PR 逐指标 diff 评审）
+```
+
 ### 其它端点
 
 - `GET /healthz`、`GET /metrics`（Prometheus）
+- `GET /api/eval/report`（只读评测报告，playground「评测报告」页签数据源）
 - A2A v1.0：`GET /.well-known/agent-card.json`（Ed25519 签名头，公钥
   `/.well-known/jwks.json`）；`POST /a2a/`（message/send|stream、tasks/get、
   tasks/cancel、agent/getAuthenticatedExtendedCard）

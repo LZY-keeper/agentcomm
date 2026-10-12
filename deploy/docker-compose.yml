@@ -24,6 +24,10 @@ services:
       # - GOV_ALLOW_LOOPBACK=false
       - TOOLS_REQUIRE_APPROVAL=${TOOLS_REQUIRE_APPROVAL:-}
       - PUBLIC_URL=${PUBLIC_URL:-}
+      # v3.1: playground 评测报告面板（只读；CI/本地 make eval 产出的 latest 报告）
+      - EVAL_REPORT_DIR=/app/eval/reports
+    volumes:
+      - ../eval/reports:/app/eval/reports:ro
     depends_on: [redis]
   redis:
     image: redis:7-alpine

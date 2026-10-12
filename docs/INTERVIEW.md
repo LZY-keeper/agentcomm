@@ -356,7 +356,18 @@ RequestID → Auth(401) → RateLimit(429) → Budget(402) → 业务 mux
 - `TestSelect_KnapsackRespectsBudget` / `TestSelect_FeedbackRewards`
 - `TestFingerprint_BaselinesThenBlocksDrift`（先 pin 基线后拦漂移）
 - govern 全家桶：合法/缺失/坏 key、loopback 豁免、前缀边界、429+Retry-After、402、脱敏、内联 key 解析。
-`make bench-router`：12 工具联邦上跑 6 条查询，打印 full/packed/saved% 表 + 均值（简历"↓70%+"的证据，可现场复现）。
+`make bench-router`：12 工具联邦上跑 6 条查询，打印 full/packed/saved%/recall@5/MRR 表（简历"↓72.5% / recall@5=0.92"的证据，可现场复现）。
+
+### 9.5.1 评测子系统（v3.1 ⭐ 面试必讲）
+
+「agent 项目没有评测系统就是玩具」——v3.1 把评测做成**门禁**而非报表：
+
+- **双金标集**：`eval/datasets/router.v1.yaml`（100 例"查询→期望工具集"，中英 6:4，35% 多相关，含 distractor 干扰例）+ `e2e.v1.yaml`（40 例端到端：数学走真 calculator、HITL 批准/拒绝双路、脚本化工具轨迹）；
+- **指标**：路由 recall@5/precision@5/MRR/hit@1/token 节省；E2E 成功率/终态/答案关键词/有序工具轨迹/意图准确率（分母只计断言了该维度的用例）；
+- **确定性三层**：mock LLM/embedding（FNV-1a 位级确定）→ 评测禁 bandit（NoopFeedback）→ hybrid 排序 ToolID 决胜（消除 map 遍历序漂移）。**StableDigest**（metrics 子树 sha256 前 16 位）双跑一致可现场验证；
+- **回归门禁**：`eval/thresholds.yaml`（floor 红线 + 相对基线最大跌幅 2pp）→ `make eval-gate` exit 1 → GitHub Actions `eval-gate` job 拦截合并；基线更新 = `make eval-baseline` + PR 逐指标 diff 评审；
+- **评测驱动修复的 4 个真实缺陷**（讲这个最加分）：① capability/intent 词典同义词缺口（"摄氏度/下雨/带伞/save/dump"未映射）→ recall@5 0.685→0.92；② mock extractExpr 只剥前缀，"等于多少"后缀喂进 calculator 报错；③ calculator 不认中文算词（"7 减 10"）；④ hybrid 并列分受 map 遍历序影响致 digest 漂移；
+- **LLMJudge 只留接口不入门禁**：`-judge llm` 接真模型评分，但禁与规则基线互比——防"裁判即考生"。
 
 ### 9.6 部署运行
 
@@ -561,3 +572,9 @@ MCP Tasks extension / elicitation / OAuth Resource Server(RFC 9728)、JCS 规范
 量化：make bench-router 现场复现; /metrics 业务指标(router_tokens full vs packed); 任务级 token 计量→预算执法
 数字卡：1500 token 预算 / TopK 5 / maxIter 5 / 截断16KB / 文件1MB / body 32KB / 熔断5次30s / EMA α=0.8 / 先验(5,5) / 审批超时1h / TTL 1h
 ```
+
+**Q59：评测集怎么防止过拟合（在金标上越调越好，泛化却变差）？**
+分层防：① 数据集分 easy/hard/distractor 三档，distractor 专门放"表面词干扰"（如"搜索到的资料写成文件"——真意图是写文件不是搜索），调词典时容易顾此失彼，天然抑制死记硬背；② 保持 holdout 习惯：新同义词先在人工抽样上验证再加词典；③ 门禁同时看 recall 和 precision——盲目扩词典会拉低 precision@5，被跌幅门禁拦住；④ 词典只做"能力信号"（0/1），排序主力是 dense+BM25，不存在无限堆关键词的通道。
+
+**Q60：为什么不用 ragas/deepeval 这类现成评测框架？**
+三个理由：① 本项目的评测对象是"路由选择 + 任务状态机"（结构化、确定性），不是自由文本生成质量——rule-based 指标就是对的度量，ragas 的 faithfulness/answer_relevancy 反而不对口；② 零 Python 依赖：评测要进 CI 门禁和单二进制交付，引 Python 运行时破坏"纯 Go 离线可复现"的卖点；③ 可控性：StableDigest 字节级稳定、阈值门禁、基线 PR diff 这些门禁语义，自己 400 行就能精确实现。LLM-as-judge 留了适配器接口（LLMJudge），真要评生成质量时接得上。

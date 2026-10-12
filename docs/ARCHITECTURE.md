@@ -73,11 +73,21 @@ wazero（纯 Go）执行 `.wasm` 工具，默认零权限、显式授权放开�
 7. WASM 沙箱默认零权限；
 8. loopback 豁免可关闭，X-Forwarded-For 不参与鉴权判定（防伪造）。
 
-## 量化（`make bench-router` / `/metrics`）
-- 工具选择 token 占用 ↓70%+（背包 vs 全量注入）；
-- 混合检索召回/精度优于纯稠密；
-- 单查询成本/延时/首 token P50 可观测；任务级 token 计量入 TaskRecord；
-- 熔断 + fallback + stats 反馈环的可用性提升。
+## 量化（v3.1 评测子系统：`make eval` / CI 回归门禁）
+
+所有量化主张以**版本化基线报告**（`eval/reports/baseline/report.json`，PR diff 评审）为准，
+CI 对每次提交强制复验（`eval-gate` job，指标回退超阈值即 fail）：
+
+| 维度 | 指标 | 基线实测（2026-10） | 门禁 |
+|------|------|------|------|
+| 路由质量 | recall@5 / MRR / hit@1 | 0.92 / 0.73 / 0.62 | floor 0.85 / 0.60 / 0.50 + 跌幅 ≤2pp |
+| 注入成本 | token 节省均值（背包 vs 全量） | 72.5% | floor 60% + 跌幅 ≤5pp |
+| E2E 任务 | 成功率 / 终态 / 答案 / 工具轨迹 / 意图 | 全 1.00（40 例含 HITL 双路） | floor 0.95 + 跌幅 ≤2pp |
+| 可复现 | StableDigest（metrics 子树 sha256） | 双跑一致 | CI 日志打印验证 |
+
+运行：`make eval`（全量）· `make eval-gate`（门禁）· `make eval-baseline`（重建基线）。
+数据集：`eval/datasets/*.v1.yaml`（140 例金标，中英混合，含 distractor）。设计细节见 `docs/BUILD.md §12`。
+可观测性（运行态）：`/metrics` 业务指标 + 任务级 token 计量入 TaskRecord。
 
 ## ROADMAP（v3 明确不做）
 MCP Tasks extension / elicitation / OAuth Resource Server 全套；Agent Skills 注册表；JCS 规范化签名；Postgres checkpoint 后端；gRPC pb 再生成（保持 build-tag 隔离）。
