@@ -16,6 +16,8 @@ import (
 	"os"
 	"sort"
 
+	"agentcomm/internal/llm"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -41,21 +43,8 @@ type E2ECase struct {
 	ExpectAgent         string        `yaml:"expect_agent,omitempty" json:"expect_agent,omitempty"`
 	ExpectAnswerContains []string     `yaml:"expect_answer_contains,omitempty" json:"expect_answer_contains,omitempty"`
 	ExpectToolCalls     []string      `yaml:"expect_tool_calls,omitempty" json:"expect_tool_calls,omitempty"` // 有序工具名
-	Script              *Script       `yaml:"script,omitempty" json:"script,omitempty"`
+	Script              *llm.Script   `yaml:"script,omitempty" json:"script,omitempty"`
 	Approval            *ApprovalSpec `yaml:"approval,omitempty" json:"approval,omitempty"`
-}
-
-// Script 由 llm.NewScripted 消费：先按序发起工具调用，工具结果回喂后用
-// Final 模板产出终答（{result}=最后一个工具输出，{query}=原查询）。
-type Script struct {
-	Calls []ScriptCall `yaml:"calls" json:"calls"`
-	Final string       `yaml:"final" json:"final"`
-}
-
-// ScriptCall 是脚本中的一步工具调用。
-type ScriptCall struct {
-	Tool string         `yaml:"tool" json:"tool"`
-	Args map[string]any `yaml:"args" json:"args"`
 }
 
 // ApprovalSpec 驱动 HITL 用例：任务 park 后按 Verdict 裁决。
