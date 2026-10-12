@@ -12,3 +12,4 @@ eval/reports/*
 !eval/reports/baseline/
 !eval/reports/latest/
 !eval/reports/README.md
+logs/

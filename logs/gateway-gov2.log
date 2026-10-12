@@ -1,4 +1,0 @@
-{"time":"2026-09-23T13:29:57.750601+08:00","level":"INFO","msg":"agentcomm gateway starting (v3)","version":"3.0.0-dev","config":"llm=mock/mock-small embed=mock/mock-1024 router(budget=1500,topk=5) lb=least_response_time redis=\"\" store=auto govern(keys=true,loopback=false)"}
-{"time":"2026-09-23T13:29:57.7611738+08:00","level":"WARN","msg":"tracer init failed (no-op)","err":"conflicting Schema URL: https://opentelemetry.io/schemas/1.43.0 and https://opentelemetry.io/schemas/1.26.0"}
-{"time":"2026-09-23T13:29:57.761687+08:00","level":"INFO","msg":"governance enabled","keys":1,"protected":"/api,/a2a,/mcp"}
-{"time":"2026-09-23T13:29:57.761687+08:00","level":"INFO","msg":"playground + gateway listening","addr":":8080","endpoints":["/","/api/chat","/api/tasks","/a2a/","/mcp","/healthz","/metrics"]}
