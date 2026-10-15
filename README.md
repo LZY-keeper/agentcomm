@@ -7,7 +7,7 @@
 > 2025-11-25/2026-07-28 协商、anti-rug-pull 工具指纹）**、**v3.1 评测子系统
 >（金标集 / 版本化报告 / CI 回归门禁）**。
 
-[![ci](https://github.com/GITHUB_USER/agentcomm/actions/workflows/ci.yml/badge.svg)](https://github.com/GITHUB_USER/agentcomm/actions/workflows/ci.yml)
+[![ci](https://github.com/LZY-keeper/agentcomm/actions/workflows/ci.yml/badge.svg)](https://github.com/LZY-keeper/agentcomm/actions/workflows/ci.yml)
 
 A **governance & routing layer** between LLM applications and a federation of
 agents (A2A) + MCP tools. Three pillars + two horizontal layers:
