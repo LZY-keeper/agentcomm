@@ -51,7 +51,3 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260819154853-08b0e4226688 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )
-
-// 本开发机亿赛通透明加密会把 module cache 中的 .c 文件密文化，导致 cgo 构建无法识别
-// build tag；此 replace 指向已修复的可写副本，仅影响本机构建，正常环境可删除。
-replace golang.org/x/sys => C:/tools/modfix/golang.org/x/sys@v0.47.0
