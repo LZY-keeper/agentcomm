@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "meta": {
-    "generated_at": "2026-10-12T08:35:13Z",
-    "commit": "daba3829017107ebdd8c037da4cec533a66fc0fc",
+    "generated_at": "2026-10-15T08:02:27Z",
+    "commit": "380819b45020d9fa1e8eba93a3dd5e9902527627",
     "go_version": "go1.25.0",
     "embedding": "mock-1024",
     "llm": "mock",

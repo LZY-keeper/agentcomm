@@ -1,0 +1,6 @@
+# 行尾统一：CI 的 gofmt 检查要求 LF；Windows 开发机 autocrlf=true 下防止 CRLF 混入。
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.wasm binary
+*.exe binary
