@@ -16,12 +16,12 @@ import (
 type Strategy string
 
 const (
-	RoundRobin        Strategy = "round_robin"
-	Random            Strategy = "random"
-	LeastConnections  Strategy = "least_connections"
+	RoundRobin         Strategy = "round_robin"
+	Random             Strategy = "random"
+	LeastConnections   Strategy = "least_connections"
 	WeightedRoundRobin Strategy = "weighted_rr"
-	ConsistentHash    Strategy = "consistent_hash"
-	LeastResponseTime Strategy = "least_response_time"
+	ConsistentHash     Strategy = "consistent_hash"
+	LeastResponseTime  Strategy = "least_response_time"
 )
 
 // LoadBalancer picks one agent from a candidate set per the configured strategy.

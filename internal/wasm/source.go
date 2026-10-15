@@ -17,11 +17,11 @@ type manifestReq struct {
 
 // manifestDoc is the JSON a tool returns for a manifest request.
 type manifestDoc struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
 	InputSchema types.ToolSchema `json:"input_schema"`
-	InputTypes  []string       `json:"input_types,omitempty"`
-	OutputTypes []string       `json:"output_types,omitempty"`
+	InputTypes  []string         `json:"input_types,omitempty"`
+	OutputTypes []string         `json:"output_types,omitempty"`
 }
 
 // Manifest asks a tool to self-describe (convention: call with {"manifest":true}).

@@ -14,9 +14,9 @@ import (
 
 // Client is a gRPC client exercising all four interaction patterns.
 type Client struct {
-	cc   *grpc.ClientConn
-	ai   pb.AIQueryServiceClient
-	ag   pb.AgentCommunicationServiceClient
+	cc *grpc.ClientConn
+	ai pb.AIQueryServiceClient
+	ag pb.AgentCommunicationServiceClient
 }
 
 func Dial(addr string) (*Client, error) {

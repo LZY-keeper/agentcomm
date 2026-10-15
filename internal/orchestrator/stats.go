@@ -16,10 +16,10 @@ import (
 // Concurrency: one observation mutates only its own agent's slot under the
 // mutex; Snapshot is called at routing time.
 type AgentStats struct {
-	mu      sync.Mutex
-	slots   map[string]*agentSlot
-	halfLn  float64 // decay factor applied per observation window
-	maxMS   float64 // cap for EMA input (runaway timeouts shouldn't poison p50)
+	mu     sync.Mutex
+	slots  map[string]*agentSlot
+	halfLn float64 // decay factor applied per observation window
+	maxMS  float64 // cap for EMA input (runaway timeouts shouldn't poison p50)
 }
 
 type agentSlot struct {

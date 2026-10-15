@@ -12,20 +12,20 @@ import (
 // Config is the top-level configuration assembled in cmd/ and injected into
 // components (dependency injection). All fields have defaults; env overrides.
 type Config struct {
-	LogLevel   string `env:"LOG_LEVEL"`   // default info
-	LogFormat  string `env:"LOG_FORMAT"`  // default json
-	Gateway    GatewayConfig
-	LLM        LLMConfig
-	Embedding  EmbeddingConfig
-	Router     RouterConfig
-	Registry   RegistryConfig
+	LogLevel     string `env:"LOG_LEVEL"`  // default info
+	LogFormat    string `env:"LOG_FORMAT"` // default json
+	Gateway      GatewayConfig
+	LLM          LLMConfig
+	Embedding    EmbeddingConfig
+	Router       RouterConfig
+	Registry     RegistryConfig
 	Orchestrator OrchestratorConfig
-	Obs        ObsConfig
-	Redis      RedisConfig
-	Store      StoreConfig   // task/session persistence (v3)
-	Govern     GovernConfig  // auth/quota/budget/audit (v3)
-	Tools      ToolsConfig   // tool-execution safety limits (v3)
-	Eval       EvalConfig    // eval report serving (v3.1)
+	Obs          ObsConfig
+	Redis        RedisConfig
+	Store        StoreConfig  // task/session persistence (v3)
+	Govern       GovernConfig // auth/quota/budget/audit (v3)
+	Tools        ToolsConfig  // tool-execution safety limits (v3)
+	Eval         EvalConfig   // eval report serving (v3.1)
 }
 
 type EvalConfig struct {
@@ -33,50 +33,50 @@ type EvalConfig struct {
 }
 
 type GatewayConfig struct {
-	HTTPAddr   string `env:"GATEWAY_HTTP_ADDR"`   // playground + metrics, default :8080
-	GRPCAddr   string `env:"GATEWAY_GRPC_ADDR"`   // default :50051
-	A2AAddr    string `env:"GATEWAY_A2A_ADDR"`    // default :5000
+	HTTPAddr string `env:"GATEWAY_HTTP_ADDR"` // playground + metrics, default :8080
+	GRPCAddr string `env:"GATEWAY_GRPC_ADDR"` // default :50051
+	A2AAddr  string `env:"GATEWAY_A2A_ADDR"`  // default :5000
 }
 
 type LLMConfig struct {
-	Provider string `env:"LLM_PROVIDER"`   // mock|qwen|openai|ollama ; default mock
+	Provider string `env:"LLM_PROVIDER"` // mock|qwen|openai|ollama ; default mock
 	Model    string `env:"LLM_MODEL"`
-	APIKey   string `env:"LLM_API_KEY"`    // also reads QWEN_API_KEY / OPENAI_API_KEY
+	APIKey   string `env:"LLM_API_KEY"` // also reads QWEN_API_KEY / OPENAI_API_KEY
 	BaseURL  string `env:"LLM_BASE_URL"`
 }
 
 type EmbeddingConfig struct {
 	Provider  string `env:"EMBEDDING_PROVIDER"` // mock|dashscope|openai ; default mock
 	Model     string `env:"EMBEDDING_MODEL"`
-	APIKey    string `env:"EMBEDDING_API_KEY"`  // also DASHSCOPE_API_KEY
-	Dimension int    `env:"EMBEDDING_DIM"`      // default 1024
+	APIKey    string `env:"EMBEDDING_API_KEY"` // also DASHSCOPE_API_KEY
+	Dimension int    `env:"EMBEDDING_DIM"`     // default 1024
 }
 
 // RouterConfig configures pillar 1 (the federated tool router engine).
 type RouterConfig struct {
-	MCPServers       []string `env:"MCP_SERVERS"`         // comma-separated upstream MCP server URLs / stdio cmds
-	TopK             int      `env:"ROUTER_TOP_K"`        // default 5
-	TokenBudget      int      `env:"ROUTER_TOKEN_BUDGET"` // max tokens reserved for tool schemas, default 1500
-	SimThreshold     float64  `env:"ROUTER_SIM_THRESHOLD"`// default 0.25
-	DenseWeight      float64  `env:"ROUTER_DENSE_W"`      // default 0.6
-	SparseWeight     float64  `env:"ROUTER_SPARSE_W"`     // default 0.3
-	CapabilityWeight float64  `env:"ROUTER_CAP_W"`        // default 0.1
-	EnableCache      bool     `env:"ROUTER_CACHE"`        // default true
-	CacheMaxEntries  int      `env:"ROUTER_CACHE_MAX"`    // default 1000
-	CacheTTLSeconds  int      `env:"ROUTER_CACHE_TTL"`    // default 3600
+	MCPServers       []string `env:"MCP_SERVERS"`          // comma-separated upstream MCP server URLs / stdio cmds
+	TopK             int      `env:"ROUTER_TOP_K"`         // default 5
+	TokenBudget      int      `env:"ROUTER_TOKEN_BUDGET"`  // max tokens reserved for tool schemas, default 1500
+	SimThreshold     float64  `env:"ROUTER_SIM_THRESHOLD"` // default 0.25
+	DenseWeight      float64  `env:"ROUTER_DENSE_W"`       // default 0.6
+	SparseWeight     float64  `env:"ROUTER_SPARSE_W"`      // default 0.3
+	CapabilityWeight float64  `env:"ROUTER_CAP_W"`         // default 0.1
+	EnableCache      bool     `env:"ROUTER_CACHE"`         // default true
+	CacheMaxEntries  int      `env:"ROUTER_CACHE_MAX"`     // default 1000
+	CacheTTLSeconds  int      `env:"ROUTER_CACHE_TTL"`     // default 3600
 }
 
 type RegistryConfig struct {
-	Addr            string `env:"REGISTRY_ADDR"`     // default :8500
-	HeartbeatSec    int    `env:"REGISTRY_HEARTBEAT"`// default 10
-	OfflineTimeoutS int    `env:"REGISTRY_TIMEOUT"`  // default 30
+	Addr            string `env:"REGISTRY_ADDR"`      // default :8500
+	HeartbeatSec    int    `env:"REGISTRY_HEARTBEAT"` // default 10
+	OfflineTimeoutS int    `env:"REGISTRY_TIMEOUT"`   // default 30
 }
 
 type OrchestratorConfig struct {
-	IntentByLLM  bool `env:"INTENT_BY_LLM"`   // default true (mock LLM still works offline)
-	LBStrategy   string `env:"LB_STRATEGY"`   // round_robin|random|least_conn|weighted_rr|consistent_hash|least_response_time ; default least_response_time
-	BreakerFailThreshold int     `env:"BREAKER_FAIL_THRESHOLD"` // default 5
-	BreakerOpenSecs      int     `env:"BREAKER_OPEN_SECS"`      // default 30
+	IntentByLLM          bool   `env:"INTENT_BY_LLM"`          // default true (mock LLM still works offline)
+	LBStrategy           string `env:"LB_STRATEGY"`            // round_robin|random|least_conn|weighted_rr|consistent_hash|least_response_time ; default least_response_time
+	BreakerFailThreshold int    `env:"BREAKER_FAIL_THRESHOLD"` // default 5
+	BreakerOpenSecs      int    `env:"BREAKER_OPEN_SECS"`      // default 30
 }
 
 type ObsConfig struct {
@@ -93,12 +93,12 @@ type RedisConfig struct {
 
 // StoreConfig configures task/session persistence (v3 HITL + session memory).
 type StoreConfig struct {
-	Backend             string `env:"STORE_BACKEND"`      // auto|memory|redis ; auto = redis when REDIS_ADDR set
-	TaskTTLSeconds      int    `env:"STORE_TASK_TTL"`     // default 3600
-	SessionTTLSeconds   int    `env:"STORE_SESSION_TTL"`  // default 86400
-	SessionMaxTurns     int    `env:"STORE_SESSION_TURNS"`// default 20 (messages loaded per session)
-	SweepIntervalSecs   int    `env:"STORE_SWEEP"`        // default 30 (memory janitor)
-	ApprovalTimeoutSecs int    `env:"APPROVAL_TIMEOUT"`   // default 3600 (input-required park limit)
+	Backend             string `env:"STORE_BACKEND"`       // auto|memory|redis ; auto = redis when REDIS_ADDR set
+	TaskTTLSeconds      int    `env:"STORE_TASK_TTL"`      // default 3600
+	SessionTTLSeconds   int    `env:"STORE_SESSION_TTL"`   // default 86400
+	SessionMaxTurns     int    `env:"STORE_SESSION_TURNS"` // default 20 (messages loaded per session)
+	SweepIntervalSecs   int    `env:"STORE_SWEEP"`         // default 30 (memory janitor)
+	ApprovalTimeoutSecs int    `env:"APPROVAL_TIMEOUT"`    // default 3600 (input-required park limit)
 }
 
 // GovernConfig configures the enterprise governance layer (v3): virtual keys,
@@ -118,8 +118,8 @@ type GovernConfig struct {
 
 // ToolsConfig bounds tool execution (v3 safety).
 type ToolsConfig struct {
-	MaxResultBytes   int `env:"TOOL_MAX_RESULT_BYTES"`    // default 16384 (truncate before LLM)
-	MaxFileBytes     int `env:"TOOL_MAX_FILE_BYTES"`      // default 1048576 (read_file cap)
+	MaxResultBytes   int      `env:"TOOL_MAX_RESULT_BYTES"`  // default 16384 (truncate before LLM)
+	MaxFileBytes     int      `env:"TOOL_MAX_FILE_BYTES"`    // default 1048576 (read_file cap)
 	ApprovalDefaults []string `env:"TOOLS_REQUIRE_APPROVAL"` // tool names forced to RequireApproval
 }
 
@@ -167,8 +167,8 @@ func Load() Config {
 			OfflineTimeoutS: envInt("REGISTRY_TIMEOUT", 30),
 		},
 		Orchestrator: OrchestratorConfig{
-			IntentByLLM:        envBool("INTENT_BY_LLM", true),
-			LBStrategy:         env("LB_STRATEGY", "least_response_time"),
+			IntentByLLM:          envBool("INTENT_BY_LLM", true),
+			LBStrategy:           env("LB_STRATEGY", "least_response_time"),
 			BreakerFailThreshold: envInt("BREAKER_FAIL_THRESHOLD", 5),
 			BreakerOpenSecs:      envInt("BREAKER_OPEN_SECS", 30),
 		},

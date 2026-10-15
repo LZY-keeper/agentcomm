@@ -24,8 +24,8 @@ import (
 // RouterCase 是路由评测的一条金标：query → 期望被选中的工具集合。
 type RouterCase struct {
 	ID            string   `yaml:"id" json:"id"`
-	Category      string   `yaml:"category" json:"category"`         // math|weather|code|file|web|mixed
-	Difficulty    string   `yaml:"difficulty" json:"difficulty"`     // easy|hard|distractor
+	Category      string   `yaml:"category" json:"category"`     // math|weather|code|file|web|mixed
+	Difficulty    string   `yaml:"difficulty" json:"difficulty"` // easy|hard|distractor
 	Query         string   `yaml:"query" json:"query"`
 	RelevantTools []string `yaml:"relevant_tools" json:"relevant_tools"` // "ServerID/Name"，≥1
 	ExpectTop1    string   `yaml:"expect_top1,omitempty" json:"expect_top1,omitempty"`
@@ -35,16 +35,16 @@ type RouterCase struct {
 // E2ECase 是端到端任务评测的一条金标：query → 期望终态/答案/工具轨迹。
 // Script 为空时走原生 mock provider（数学路径）；非空时走 Scripted provider。
 type E2ECase struct {
-	ID                  string        `yaml:"id" json:"id"`
-	Category            string        `yaml:"category" json:"category"` // math|weather|code|file|hitl|general
-	Query               string        `yaml:"query" json:"query"`
-	ExpectState         string        `yaml:"expect_state" json:"expect_state"`
-	ExpectIntent        string        `yaml:"expect_intent,omitempty" json:"expect_intent,omitempty"`
-	ExpectAgent         string        `yaml:"expect_agent,omitempty" json:"expect_agent,omitempty"`
-	ExpectAnswerContains []string     `yaml:"expect_answer_contains,omitempty" json:"expect_answer_contains,omitempty"`
-	ExpectToolCalls     []string      `yaml:"expect_tool_calls,omitempty" json:"expect_tool_calls,omitempty"` // 有序工具名
-	Script              *llm.Script   `yaml:"script,omitempty" json:"script,omitempty"`
-	Approval            *ApprovalSpec `yaml:"approval,omitempty" json:"approval,omitempty"`
+	ID                   string        `yaml:"id" json:"id"`
+	Category             string        `yaml:"category" json:"category"` // math|weather|code|file|hitl|general
+	Query                string        `yaml:"query" json:"query"`
+	ExpectState          string        `yaml:"expect_state" json:"expect_state"`
+	ExpectIntent         string        `yaml:"expect_intent,omitempty" json:"expect_intent,omitempty"`
+	ExpectAgent          string        `yaml:"expect_agent,omitempty" json:"expect_agent,omitempty"`
+	ExpectAnswerContains []string      `yaml:"expect_answer_contains,omitempty" json:"expect_answer_contains,omitempty"`
+	ExpectToolCalls      []string      `yaml:"expect_tool_calls,omitempty" json:"expect_tool_calls,omitempty"` // 有序工具名
+	Script               *llm.Script   `yaml:"script,omitempty" json:"script,omitempty"`
+	Approval             *ApprovalSpec `yaml:"approval,omitempty" json:"approval,omitempty"`
 }
 
 // ApprovalSpec 驱动 HITL 用例：任务 park 后按 Verdict 裁决。
@@ -55,14 +55,14 @@ type ApprovalSpec struct {
 
 // DatasetMeta 记录数据集自身元信息（进报告，供追溯）。
 type DatasetMeta struct {
-	Version        string `yaml:"version" json:"dataset_version"`
-	Toolset        string `yaml:"toolset" json:"toolset"`
-	CaseCount      int    `yaml:"-" json:"case_count"`
-	Source         string `yaml:"-" json:"source"`
+	Version   string `yaml:"version" json:"dataset_version"`
+	Toolset   string `yaml:"toolset" json:"toolset"`
+	CaseCount int    `yaml:"-" json:"case_count"`
+	Source    string `yaml:"-" json:"source"`
 }
 
 type routerDatasetFile struct {
-	Version int `yaml:"version"`
+	Version int    `yaml:"version"`
 	Suite   string `yaml:"suite"`
 	Meta    struct {
 		DatasetVersion string `yaml:"dataset_version"`
@@ -72,7 +72,7 @@ type routerDatasetFile struct {
 }
 
 type e2eDatasetFile struct {
-	Version int `yaml:"version"`
+	Version int    `yaml:"version"`
 	Suite   string `yaml:"suite"`
 	Meta    struct {
 		DatasetVersion string `yaml:"dataset_version"`
@@ -89,7 +89,7 @@ var (
 )
 
 // LoadRouterDataset 读取并校验路由金标集。toolIDs 为合法工具 ID 集合
-//（"ServerID/Name"），relevant_tools 与 expect_top1 必须落在其中。
+// （"ServerID/Name"），relevant_tools 与 expect_top1 必须落在其中。
 func LoadRouterDataset(path string, toolIDs map[string]bool) ([]RouterCase, DatasetMeta, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -184,5 +184,7 @@ func LoadE2EDataset(path string) ([]E2ECase, DatasetMeta, error) {
 }
 
 // SortCases 按 ID 排序，保证报告输出与迭代顺序无关。
-func SortRouterCases(cs []RouterCase) { sort.Slice(cs, func(i, j int) bool { return cs[i].ID < cs[j].ID }) }
-func SortE2ECases(cs []E2ECase)       { sort.Slice(cs, func(i, j int) bool { return cs[i].ID < cs[j].ID }) }
+func SortRouterCases(cs []RouterCase) {
+	sort.Slice(cs, func(i, j int) bool { return cs[i].ID < cs[j].ID })
+}
+func SortE2ECases(cs []E2ECase) { sort.Slice(cs, func(i, j int) bool { return cs[i].ID < cs[j].ID }) }

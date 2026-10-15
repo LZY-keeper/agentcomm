@@ -32,27 +32,27 @@ func (c *OpenAICompatible) Name() string { return c.name }
 // --- request shape ---
 
 type oaiMessage struct {
-	Role       string         `json:"role"`
-	Content    string         `json:"content,omitempty"`
-	ToolCallID string         `json:"tool_call_id,omitempty"`
-	ToolCalls  []oaiToolCall  `json:"tool_calls,omitempty"`
+	Role       string        `json:"role"`
+	Content    string        `json:"content,omitempty"`
+	ToolCallID string        `json:"tool_call_id,omitempty"`
+	ToolCalls  []oaiToolCall `json:"tool_calls,omitempty"`
 }
 type oaiToolCall struct {
-	ID       string           `json:"id,omitempty"`
-	Type     string           `json:"type,omitempty"`
-	Function oaiToolFunction  `json:"function"`
+	ID       string          `json:"id,omitempty"`
+	Type     string          `json:"type,omitempty"`
+	Function oaiToolFunction `json:"function"`
 }
 type oaiToolFunction struct {
-	Name      string         `json:"name"`
-	Arguments string         `json:"arguments"`
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
 }
 type oaiTool struct {
 	Type     string      `json:"type"` // "function"
 	Function oaiFuncSpec `json:"function"`
 }
 type oaiFuncSpec struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
 	Parameters  types.ToolSchema `json:"parameters"`
 }
 type oaiRequest struct {
@@ -68,9 +68,9 @@ type oaiChunk struct {
 	Choices []oaiChoice `json:"choices"`
 }
 type oaiChoice struct {
-	Index        int       `json:"index"`
-	Delta        oaiDelta  `json:"delta"`
-	FinishReason *string   `json:"finish_reason"`
+	Index        int      `json:"index"`
+	Delta        oaiDelta `json:"delta"`
+	FinishReason *string  `json:"finish_reason"`
 }
 type oaiDelta struct {
 	Role      string         `json:"role,omitempty"`
@@ -78,9 +78,9 @@ type oaiDelta struct {
 	ToolCalls []oaiDeltaTool `json:"tool_calls,omitempty"`
 }
 type oaiDeltaTool struct {
-	Index    int            `json:"index"`
-	ID       string         `json:"id,omitempty"`
-	Type     string         `json:"type,omitempty"`
+	Index    int             `json:"index"`
+	ID       string          `json:"id,omitempty"`
+	Type     string          `json:"type,omitempty"`
 	Function oaiToolFunction `json:"function"`
 }
 

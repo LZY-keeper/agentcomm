@@ -17,13 +17,13 @@ import (
 
 // Params tunes the router engine.
 type Params struct {
-	TopK          int     // max tools to return (after packing)
-	TokenBudget   int     // max tokens reserved for tool schemas
-	CandidateCap  int     // max pre-pack candidates fed to the knapsack
-	SimThreshold  float64 // minimum fused score to keep (0 = off)
-	DenseWeight   float64
-	SparseWeight  float64
-	CapWeight     float64
+	TopK         int     // max tools to return (after packing)
+	TokenBudget  int     // max tokens reserved for tool schemas
+	CandidateCap int     // max pre-pack candidates fed to the knapsack
+	SimThreshold float64 // minimum fused score to keep (0 = off)
+	DenseWeight  float64
+	SparseWeight float64
+	CapWeight    float64
 }
 
 // Selection is the outcome of Select — the chosen tools plus full vs packed

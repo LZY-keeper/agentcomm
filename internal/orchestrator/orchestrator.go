@@ -44,9 +44,9 @@ type Orchestrator struct {
 	stats    *AgentStats
 	hooks    *LoopHooks // v3: applied to every RunAgentLoop (approval/truncation)
 
-	mu     sync.RWMutex
-	byID   map[string]Agent
-	order  []string
+	mu    sync.RWMutex
+	byID  map[string]Agent
+	order []string
 }
 
 // SetHooks installs loop hooks applied to every agent loop (v3: the hub

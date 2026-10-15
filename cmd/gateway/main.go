@@ -106,8 +106,8 @@ func main() {
 	stats := orchestrator.NewAgentStats()
 	orch := orchestrator.New(orchestrator.Deps{
 		Router: rt, Tools: toolReg, LLM: provider,
-		LB:      orchestrator.NewLoadBalancer(strat),
-		Breaker: orchestrator.NewBreakerManager(cfg.Orchestrator.BreakerFailThreshold, cfg.Orchestrator.BreakerOpenSecs),
+		LB:       orchestrator.NewLoadBalancer(strat),
+		Breaker:  orchestrator.NewBreakerManager(cfg.Orchestrator.BreakerFailThreshold, cfg.Orchestrator.BreakerOpenSecs),
 		Feedback: fb, Metrics: metrics, Stats: stats,
 	})
 	orch.RegisterAgent(orchestrator.NewLLMAgent("math-1", "数学助手",

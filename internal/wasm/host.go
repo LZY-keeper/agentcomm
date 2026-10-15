@@ -3,6 +3,7 @@
 //   - cross-platform single-binary operation (replaces v1's LoadLibrary/fork);
 //   - runtime-level isolation: a module cannot touch host memory/files/network
 //     unless explicitly granted (WASI FS mounts / host functions);
+//
 // which directly addresses MCP's third-party-tool security risk.
 //
 // Tool ABI (simple, language-agnostic): the module reads a JSON request from

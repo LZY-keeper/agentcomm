@@ -190,10 +190,10 @@ func (m *MemoryTaskStore) Close() error {
 
 // MemorySessionStore keeps per-session rolling windows of messages with TTL.
 type MemorySessionStore struct {
-	mu     sync.RWMutex
-	sess   map[string]*SessionRecord
-	ttl    time.Duration
-	clock  Clock
+	mu    sync.RWMutex
+	sess  map[string]*SessionRecord
+	ttl   time.Duration
+	clock Clock
 }
 
 // NewMemorySessionStore builds a session store; ttl<=0 defaults to 24h.

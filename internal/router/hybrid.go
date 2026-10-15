@@ -12,6 +12,7 @@ import (
 //   - dense (semantic, from rag.Retriever): "what does the query mean"
 //   - sparse (BM25 keywords): exact identifier/term matches
 //   - capability (I/O type graph): "can this tool produce what's needed"
+//
 // Each signal is min-max normalized to [0,1] then combined with configurable
 // weights (default 0.6 / 0.3 / 0.1). Normalization keeps the fusion robust to
 // differing score scales — the failure mode of raw weighted sums.

@@ -12,12 +12,12 @@ import (
 // (semantic) retrieval: exact keyword matches (API names, identifiers) score
 // strongly here even when embeddings are similar, improving precision.
 type BM25 struct {
-	ids    []string
-	docs   [][]string // tokenized fingerprints
-	dl     []int
-	avgdl  float64
-	idf    map[string]float64
-	k1, b  float64
+	ids   []string
+	docs  [][]string // tokenized fingerprints
+	dl    []int
+	avgdl float64
+	idf   map[string]float64
+	k1, b float64
 }
 
 // NewBM25 builds the ranker from the federated tool set.

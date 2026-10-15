@@ -135,15 +135,15 @@ type e2eCatStat struct {
 }
 
 type e2eCaseResult struct {
-	Pass                            bool
-	StateOK, AnswerOK, TraceOK      bool
-	IntentOK                        bool
-	IntentAsserted                  bool
-	FinalState, Answer, AgentID     string
-	Intent                          string
-	ToolCalls                       []string
-	InputTokens, OutputTokens       int64
-	Reasons                         []string
+	Pass                        bool
+	StateOK, AnswerOK, TraceOK  bool
+	IntentOK                    bool
+	IntentAsserted              bool
+	FinalState, Answer, AgentID string
+	Intent                      string
+	ToolCalls                   []string
+	InputTokens, OutputTokens   int64
+	Reasons                     []string
 }
 
 // runCase 构建 fixture 并跑一条用例（含 HITL approve/deny 驱动）。

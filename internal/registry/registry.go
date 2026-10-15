@@ -23,10 +23,10 @@ type entry struct {
 
 // Registry holds registered agents keyed by id, indexed by tag/skill.
 type Registry struct {
-	mu      sync.RWMutex
-	agents  map[string]*entry
-	index   map[string]map[string]struct{} // skill -> set(agentID)
-	ttl     time.Duration
+	mu     sync.RWMutex
+	agents map[string]*entry
+	index  map[string]map[string]struct{} // skill -> set(agentID)
+	ttl    time.Duration
 }
 
 func New(ttl time.Duration) *Registry {

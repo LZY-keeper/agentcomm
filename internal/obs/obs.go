@@ -90,7 +90,9 @@ func NewMetrics() *Metrics {
 func (m *Metrics) Registry() *prometheus.Registry { return m.reg }
 
 // HTTPHandler returns the /metrics HTTP handler.
-func (m *Metrics) HTTPHandler() http.Handler { return promhttp.HandlerFor(m.reg, promhttp.HandlerOpts{}) }
+func (m *Metrics) HTTPHandler() http.Handler {
+	return promhttp.HandlerFor(m.reg, promhttp.HandlerOpts{})
+}
 
 // --- Tracing ---
 

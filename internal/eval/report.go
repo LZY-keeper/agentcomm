@@ -17,36 +17,36 @@ const ReportSchemaVersion = 1
 
 // Report 是一次评测运行的完整产物。
 type Report struct {
-	SchemaVersion int                    `json:"schema_version"`
-	Meta          ReportMeta             `json:"meta"`
+	SchemaVersion int                     `json:"schema_version"`
+	Meta          ReportMeta              `json:"meta"`
 	Suites        map[string]*SuiteResult `json:"suites"` // key: "router" | "e2e"
 }
 
 // ReportMeta 记录运行环境。GeneratedAt 仅作展示，不参与门禁与 digest。
 type ReportMeta struct {
-	GeneratedAt    string            `json:"generated_at"` // 展示用；门禁比较忽略
-	Commit         string            `json:"commit,omitempty"`
-	GoVersion      string            `json:"go_version,omitempty"`
-	Embedding      string            `json:"embedding"`
-	LLM            string            `json:"llm"`
-	Judge          string            `json:"judge"`
-	Params         map[string]any    `json:"params,omitempty"`
-	Datasets       map[string]string `json:"datasets"` // suite → dataset 版本
+	GeneratedAt string            `json:"generated_at"` // 展示用；门禁比较忽略
+	Commit      string            `json:"commit,omitempty"`
+	GoVersion   string            `json:"go_version,omitempty"`
+	Embedding   string            `json:"embedding"`
+	LLM         string            `json:"llm"`
+	Judge       string            `json:"judge"`
+	Params      map[string]any    `json:"params,omitempty"`
+	Datasets    map[string]string `json:"datasets"` // suite → dataset 版本
 }
 
 // SuiteResult 是单个 suite（router/e2e）的聚合结果。
 type SuiteResult struct {
-	Metrics    map[string]float64        `json:"metrics"`    // 指标名（suite.name）→ 值
+	Metrics    map[string]float64            `json:"metrics"`     // 指标名（suite.name）→ 值
 	ByCategory map[string]map[string]float64 `json:"by_category"` // category → 指标 → 值
-	CaseCount  int                       `json:"case_count"`
-	Failures   []CaseFailure             `json:"failures,omitempty"`
-	Cases      []map[string]any          `json:"cases,omitempty"` // per-case 明细（已排序）
+	CaseCount  int                           `json:"case_count"`
+	Failures   []CaseFailure                 `json:"failures,omitempty"`
+	Cases      []map[string]any              `json:"cases,omitempty"` // per-case 明细（已排序）
 }
 
 // CaseFailure 记一条未过用例（供报告与 playground 展示）。
 type CaseFailure struct {
-	ID      string `json:"id"`
-	Query   string `json:"query"`
+	ID      string   `json:"id"`
+	Query   string   `json:"query"`
 	Reasons []string `json:"reasons"`
 }
 

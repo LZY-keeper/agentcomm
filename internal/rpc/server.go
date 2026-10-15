@@ -61,7 +61,7 @@ func (s *Server) Query(ctx context.Context, req *pb.AIQueryRequest) (*pb.AIQuery
 		AgentId: dec.Agent.ID, AgentName: dec.Agent.Name,
 		ContextId: req.ContextId, ProcessingTimeMs: time.Since(start).Milliseconds(),
 		RoutingDecisionJson: string(decJSON),
-		Status: &pb.Status{Code: 0, Message: "ok"},
+		Status:              &pb.Status{Code: 0, Message: "ok"},
 	}, nil
 }
 

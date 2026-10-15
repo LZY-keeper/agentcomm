@@ -163,7 +163,7 @@ func TestMaskSecrets(t *testing.T) {
 }
 
 func TestParseInlineKey(t *testing.T) {
-	rec, err := parseInlineKey("ops:"+testKeyHash+":ops-tenant:10:20:-1|read_file,get_weather|@builtin")
+	rec, err := parseInlineKey("ops:" + testKeyHash + ":ops-tenant:10:20:-1|read_file,get_weather|@builtin")
 	if err != nil {
 		t.Fatal(err)
 	}

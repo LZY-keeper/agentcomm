@@ -28,11 +28,11 @@ var webFS embed.FS
 // Handler wires the playground HTTP routes. v3: chat runs through the Hub so
 // every exchange is a durable task (state + approval visible in the panel).
 type Handler struct {
-	orch       *orchestrator.Orchestrator
-	hub        *orchestrator.Hub
-	metrics    *obs.Metrics
-	version    string
-	meta       map[string]string
+	orch          *orchestrator.Orchestrator
+	hub           *orchestrator.Hub
+	metrics       *obs.Metrics
+	version       string
+	meta          map[string]string
 	evalReportDir string // v3.1: serves eval/reports/latest/report.json (read-only)
 }
 
@@ -78,8 +78,8 @@ func (h *Handler) handleEvalReport(w http.ResponseWriter, _ *http.Request) {
 
 func (h *Handler) handleMeta(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
-		"version":  h.version,
-		"provider": h.meta["llm"],
+		"version":   h.version,
+		"provider":  h.meta["llm"],
 		"embedding": h.meta["embedding"],
 	})
 }
@@ -89,9 +89,9 @@ func (h *Handler) handleHealth(w http.ResponseWriter, _ *http.Request) {
 }
 
 type chatRequest struct {
-	Query   string           `json:"query"`
-	History []types.Message  `json:"history"`
-	Session string           `json:"session"`
+	Query   string          `json:"query"`
+	History []types.Message `json:"history"`
+	Session string          `json:"session"`
 }
 
 // maxQueryBytes caps the chat request body (v3: unbounded bodies are a DoS

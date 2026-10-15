@@ -9,14 +9,14 @@ import (
 // Cache is a thread-safe LRU + TTL cache for embeddings, cutting repeated
 // embedding API calls (ported conceptually from v1's textbook LRU store).
 type Cache struct {
-	max     int
-	ttl     time.Duration
-	mu      sync.Mutex
-	ll      *list.List
-	items   map[string]*list.Element
-	hits    uint64
-	misses  uint64
-	evicts  uint64
+	max    int
+	ttl    time.Duration
+	mu     sync.Mutex
+	ll     *list.List
+	items  map[string]*list.Element
+	hits   uint64
+	misses uint64
+	evicts uint64
 }
 
 type cacheEntry struct {

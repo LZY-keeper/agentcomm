@@ -11,10 +11,10 @@ import (
 type AuthOption func(*authMW)
 
 type authMW struct {
-	keys       *Keys
-	loopback   bool
-	exempt     []string
-	protected  []string
+	keys      *Keys
+	loopback  bool
+	exempt    []string
+	protected []string
 }
 
 // WithLoopbackAllowed allows unauthenticated localhost callers (default on:

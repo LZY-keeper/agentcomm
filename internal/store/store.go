@@ -67,9 +67,9 @@ type TaskRecord struct {
 	Rev          int64            `json:"rev"` // optimistic-lock revision, managed by the store
 	SessionKey   string           `json:"session_key,omitempty"`
 	StatusMsg    string           `json:"status_message,omitempty"`
-	Checkpoint   *Checkpoint      `json:"checkpoint,omitempty"`  // present while working/input-required
-	Approval     *ApprovalRequest `json:"approval,omitempty"`    // pending/last approval ticket
-	Answer       string           `json:"answer,omitempty"`      // accumulated streamed output
+	Checkpoint   *Checkpoint      `json:"checkpoint,omitempty"` // present while working/input-required
+	Approval     *ApprovalRequest `json:"approval,omitempty"`   // pending/last approval ticket
+	Answer       string           `json:"answer,omitempty"`     // accumulated streamed output
 	InputTokens  int64            `json:"input_tokens,omitempty"`
 	OutputTokens int64            `json:"output_tokens,omitempty"`
 	CreatedAt    time.Time        `json:"created_at"`

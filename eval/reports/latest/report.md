@@ -1,7 +1,7 @@
 # agentcomm 评测报告
 
-- 生成时间：2026-10-15T08:02:27Z
-- 提交：`380819b45020d9fa1e8eba93a3dd5e9902527627`
+- 生成时间：2026-10-15T08:42:02Z
+- 提交：`3f801dc2226a37058b3175d342afef2970bba4bb`
 - 环境：embedding=mock-1024 llm=mock judge=mock digest=`f668b7beff182e16`
 
 ## e2e（40 例）

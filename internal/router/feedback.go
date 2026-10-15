@@ -27,7 +27,7 @@ type BetaFeedback struct {
 	mu     sync.Mutex
 	alpha  map[string]float64 // successes (prior 1)
 	beta   map[string]float64 // failures (prior 1)
-	weight float64             // how much learned mean influences score
+	weight float64            // how much learned mean influences score
 }
 
 func NewBetaFeedback(weight float64) *BetaFeedback {
@@ -56,7 +56,7 @@ func (b *BetaFeedback) Adjust(scored []types.ScoredTool) []types.ScoredTool {
 		id := toolKey(scored[i].Tool)
 		a := b.alpha[id] + 1
 		bb := b.beta[id] + 1
-		mean := a / (a + bb) // Beta posterior mean
+		mean := a / (a + bb)                       // Beta posterior mean
 		scored[i].Score += b.weight * (mean - 0.5) // center at neutral
 	}
 	insertionSortDesc(scored)

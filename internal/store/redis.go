@@ -57,9 +57,9 @@ func (s *RedisStores) Ping(ctx context.Context) error {
 	return s.rdb.Ping(c).Err()
 }
 
-func taskKey(id string) string        { return "agw:task:" + id }
-func sessIdxKey(sess string) string   { return "agw:task:idx:" + sess }
-func sessKey(key string) string       { return "agw:sess:" + key }
+func taskKey(id string) string      { return "agw:task:" + id }
+func sessIdxKey(sess string) string { return "agw:task:idx:" + sess }
+func sessKey(key string) string     { return "agw:sess:" + key }
 
 // Create stores the record under agw:task:<id> with TTL and indexes it by
 // session (ZSET scored by creation time) for List.

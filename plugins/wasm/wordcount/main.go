@@ -1,11 +1,14 @@
 // word_count — a sample sandboxed MCP tool compiled to WASM (TinyGo).
 //
 // ABI: reads a JSON request from stdin, writes a JSON {text} result to stdout.
-//   {"manifest": true}                    -> returns this tool's self-description
-//   {"text": "..."}                       -> counts words/chars, returns summary
+//
+//	{"manifest": true}                    -> returns this tool's self-description
+//	{"text": "..."}                       -> counts words/chars, returns summary
 //
 // Build (requires TinyGo + WASI target):
-//   tinygo build -o wordcount.wasm -target wasi ./main.go
+//
+//	tinygo build -o wordcount.wasm -target wasi ./main.go
+//
 // Then drop wordcount.wasm in the WASM plugin dir (WASM_DIR) and the gateway
 // loads it under full sandbox (no FS/network unless granted in Permissions).
 package main

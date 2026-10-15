@@ -18,7 +18,7 @@ type StaticSource struct {
 	tools []types.Tool
 }
 
-func NewStaticSource(tools ...types.Tool) *StaticSource { return &StaticSource{tools: tools} }
+func NewStaticSource(tools ...types.Tool) *StaticSource               { return &StaticSource{tools: tools} }
 func (s *StaticSource) Tools(_ context.Context) ([]types.Tool, error) { return s.tools, nil }
 
 // MultiSource federates several upstream sources, tagging every tool with its

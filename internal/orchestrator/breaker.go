@@ -85,10 +85,10 @@ func (b *breaker) State() int {
 
 // BreakerManager keeps a breaker per agent id.
 type BreakerManager struct {
-	mu      sync.Mutex
+	mu       sync.Mutex
 	breakers map[string]*breaker
-	thresh  int
-	openSec int
+	thresh   int
+	openSec  int
 }
 
 func NewBreakerManager(threshold, openSecs int) *BreakerManager {
@@ -112,6 +112,6 @@ func (m *BreakerManager) get(id string) *breaker {
 	return b
 }
 
-func (m *BreakerManager) Allow(id string) bool { return m.get(id).Allow(time.Now()) }
+func (m *BreakerManager) Allow(id string) bool           { return m.get(id).Allow(time.Now()) }
 func (m *BreakerManager) Record(id string, success bool) { m.get(id).Record(success, time.Now()) }
-func (m *BreakerManager) State(id string) int { return m.get(id).State() }
+func (m *BreakerManager) State(id string) int            { return m.get(id).State() }

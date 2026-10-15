@@ -16,11 +16,11 @@ type Limiter interface {
 // TokenBucket is the production Limiter: one x/time/rate.Limiter per key id,
 // created lazily with the key's configured (or default) rps/burst.
 type TokenBucket struct {
-	mu      sync.Mutex
-	m       map[string]*rate.Limiter
-	defRPS  rate.Limit
+	mu       sync.Mutex
+	m        map[string]*rate.Limiter
+	defRPS   rate.Limit
 	defBurst int
-	keys    *Keys // per-key overrides
+	keys     *Keys // per-key overrides
 }
 
 // NewTokenBucketLimiter builds the limiter with gateway-wide defaults; per-key

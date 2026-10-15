@@ -19,11 +19,11 @@ type KeyRecord struct {
 	ID        string   `json:"id"`
 	KeySHA256 string   `json:"key_sha256"` // hex; lowercased
 	Tenant    string   `json:"tenant"`
-	RPS       float64  `json:"rps,omitempty"`        // 0 → gateway default
-	Burst     int      `json:"burst,omitempty"`      // 0 → gateway default
-	Budget    int64    `json:"budget_tokens"`        // <0 = unlimited; 0 → default
-	Tools     []string `json:"tools,omitempty"`      // empty = all tools allowed
-	Servers   []string `json:"servers,omitempty"`    // empty = all MCP servers allowed
+	RPS       float64  `json:"rps,omitempty"`     // 0 → gateway default
+	Burst     int      `json:"burst,omitempty"`   // 0 → gateway default
+	Budget    int64    `json:"budget_tokens"`     // <0 = unlimited; 0 → default
+	Tools     []string `json:"tools,omitempty"`   // empty = all tools allowed
+	Servers   []string `json:"servers,omitempty"` // empty = all MCP servers allowed
 }
 
 // AllowsTool reports whether the key may see/call a tool on a server.
