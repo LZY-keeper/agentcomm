@@ -49,7 +49,7 @@ jobs:
           go run ./cmd/eval -suite all -out eval/reports/ci \
             -baseline eval/reports/baseline/report.json -format markdown
       - name: Upload eval report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: eval-report
           path: |
