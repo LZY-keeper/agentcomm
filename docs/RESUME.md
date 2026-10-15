@@ -52,7 +52,7 @@ C++ v1 从零实现通信框架 → 复盘工程局限（假流式/跨平台/无
 
 ---
 ### 附：目录与运行
-- 代码：`go-v3/`（v3，可运行）；`go-v2/`（v2 档案）；根目录（v1 C++ 原作）
-- 运行：`cd go-v3 && make tidy && make run` → http://localhost:8080（离线免 key）
+- 代码：仓库根（v3，可运行）；`docs/legacy/v2-go/`（v2 档案）；`docs/legacy/v1-cpp/`（v1 C++ 原作）
+- 运行：`make tidy && make run` → http://localhost:8080（离线免 key）
 - HITL 演示：`TOOLS_REQUIRE_APPROVAL=calculator make run`
 - 详见 `docs/BUILD.md`、`docs/ARCHITECTURE.md`、`docs/ROADMAP.md`
