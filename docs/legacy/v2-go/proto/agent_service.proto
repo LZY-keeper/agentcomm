@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package agentcomm;
+
+import "common.proto";
+
+option go_package = "agentcomm/internal/rpc/pb;pb";
+
+// Agent 间通信服务 —— 演示真·四种 gRPC 模式。
+// RealTimeCommunication 做真正的跨客户端消息路由（修复 v1 的回声桩）。
+
+message Message {
+  string id = 1;
+  string type = 2;
+  string content = 3;
+  int64 timestamp = 4;
+  string source_agent = 5;
+  string target_agent = 6;
+  map<string, string> headers = 7;
+}
+
+service AgentCommunicationService {
+  // unary
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  // unary
+  rpc GetAgents(GetAgentsRequest) returns (GetAgentsResponse);
+  // server-streaming：订阅消息
+  rpc ListenMessages(ListenRequest) returns (stream Message);
+  // client-streaming：批量发送
+  rpc BatchSendMessages(stream SendMessageRequest) returns (BatchSendResponse);
+  // bidi-streaming：实时双向通信（真路由，非回声）
+  rpc RealTimeCommunication(stream Message) returns (stream Message);
+}
+
+message SendMessageRequest { Message message = 1; }
+message SendMessageResponse { agentcomm.common.Status status = 1; string message_id = 2; }
+message GetAgentsRequest { string skill = 1; }
+message GetAgentsResponse { repeated agentcomm.common.ServiceInfo agents = 1; }
+message ListenRequest { string agent_id = 1; string skill = 2; int32 max = 3; }
+message BatchSendResponse { agentcomm.common.Status status = 1; int32 accepted = 2; }
+
+service HealthService {
+  rpc Check(agentcomm.common.HealthCheckRequest) returns (agentcomm.common.HealthCheckResponse);
+}

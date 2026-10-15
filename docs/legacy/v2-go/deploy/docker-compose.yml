@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  gateway:
+    build: ..
+    image: agentcomm:latest
+    command: ["/app/bin/gateway"]
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=info
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-mock}
+      - QWEN_API_KEY=${QWEN_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - ROUTER_TOKEN_BUDGET=${ROUTER_TOKEN_BUDGET:-1500}
+      - ROUTER_TOP_K=${ROUTER_TOP_K:-5}
+  registry:
+    image: agentcomm:latest
+    command: ["/app/bin/registry"]
+    ports:
+      - "8500:8500"
+  math-agent:
+    image: agentcomm:latest
+    command: ["/app/bin/agent-math"]
+    environment:
+      - AGENT_PORT=5001
+      - REGISTRY_URL=http://registry:8500
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+    ports:
+      - "5001:5001"
+    depends_on: [registry]

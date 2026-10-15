@@ -1,11 +1,13 @@
 # agentcomm v3 — 企业级智能 Agent 网关 / MCP 工具路由引擎
 
-> v3 迭代自 `go-v2`（Go 重写版）；v1（C++/gRPC 原作）保留于仓库根目录。
+> v3 迭代自 Go v2，v1 为 C++/gRPC 原作——两个前代版本的源码快照保留在
+> `docs/legacy/`（三版本演进叙事见 `docs/legacy/README.md`）。
 > v3 核心增量：**任务持久化 + 人工审批（HITL）**、**企业治理层（virtual key /
 > 限流 / 预算 / 审计 / 工具权限）**、**2026 协议对齐（A2A v1.0 卡片签名、MCP
-> 2025-11-25/2026-07-28 协商、anti-rug-pull 工具指纹）**。
+> 2025-11-25/2026-07-28 协商、anti-rug-pull 工具指纹）**、**v3.1 评测子系统
+>（金标集 / 版本化报告 / CI 回归门禁）**。
 
-[![ci](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![ci](https://github.com/GITHUB_USER/agentcomm/actions/workflows/ci.yml/badge.svg)](https://github.com/GITHUB_USER/agentcomm/actions/workflows/ci.yml)
 
 A **governance & routing layer** between LLM applications and a federation of
 agents (A2A) + MCP tools. Three pillars + two horizontal layers:

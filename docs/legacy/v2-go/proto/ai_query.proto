@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package agentcomm;
+
+import "common.proto";
+
+option go_package = "agentcomm/internal/rpc/pb;pb";
+
+// 超级 Agent 查询请求/响应
+message AgentPreference {
+  repeated string preferred_skills = 1;
+  repeated string preferred_agents = 2;
+  bool allow_fallback = 3;
+}
+
+message AIQueryRequest {
+  string request_id = 1;
+  string question = 2;
+  string context_id = 3;
+  int32 history_length = 4;
+  int32 timeout_seconds = 5;
+  map<string, string> metadata = 6;
+  AgentPreference preference = 7;
+}
+
+message Artifact {
+  string name = 1;
+  string mime_type = 2;
+  bytes data = 3;
+  map<string, string> metadata = 4;
+}
+
+message AIQueryResponse {
+  string request_id = 1;
+  agentcomm.common.Status status = 2;
+  string answer = 3;
+  string agent_id = 4;
+  string agent_name = 5;
+  string task_id = 6;
+  string context_id = 7;
+  repeated Artifact artifacts = 8;
+  int64 processing_time_ms = 9;
+  string routing_decision_json = 10; // 序列化的 RoutingDecision，供客户端可视化
+}
+
+message AIStreamEvent {
+  string event_id = 1;
+  string event_type = 2; // "token" | "decision" | "done"
+  string content = 3;
+  string context_id = 4;
+  int64 timestamp = 5;
+}
+
+service AIQueryService {
+  rpc Query(AIQueryRequest) returns (AIQueryResponse);            // unary
+  rpc QueryStream(AIQueryRequest) returns (stream AIStreamEvent); // server-streaming (真 token 流)
+  rpc GetQueryStatus(QueryStatusRequest) returns (QueryStatusResponse);
+}
+
+message QueryStatusRequest { string task_id = 1; string context_id = 2; }
+message QueryStatusResponse {
+  agentcomm.common.Status status = 1;
+  string task_state = 2;
+}

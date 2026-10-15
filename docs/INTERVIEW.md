@@ -48,7 +48,7 @@
 这是面试 2 分钟自我介绍项目的主线，体现 **"能造系统 → 能重构系统 → 能交付系统"**：
 
 ```
-C++ v1（原创，仓库根目录）          Go v2（go-v2/，档案）              Go v3（go-v3/，最终形态）
+C++ v1（原创，docs/legacy/v1-cpp/）  Go v2（docs/legacy/v2-go/，档案）    Go v3（仓库根，最终形态）
 ─────────────────────────        ─────────────────────────        ─────────────────────────
 从零实现多 Agent 通信框架          复盘 v1 工程局限后生产级重写          站在"生产上线"视角企业化迭代
 gRPC + libcurl + nlohmann/json    三支柱架构确立：                     · 任务持久化 + HITL 审批闭环
@@ -372,7 +372,7 @@ RequestID → Auth(401) → RateLimit(429) → Budget(402) → 业务 mux
 ### 9.6 部署运行
 
 ```bash
-cd go-v3 && make tidy && make run      # 离线免 key → http://localhost:8080
+cd agentcomm && make tidy && make run   # 离线免 key → http://localhost:8080
 TOOLS_REQUIRE_APPROVAL=calculator make run          # HITL 演示
 GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$HASH:tenant-a:5:10:200000|read_file,calculator|@builtin" make run   # 治理
 REDIS_ADDR=127.0.0.1:6379 make run                  # 审批跨重启恢复

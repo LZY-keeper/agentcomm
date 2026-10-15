@@ -16,7 +16,6 @@
 
 首次：
 ```bash
-cd go-v2
 go mod tidy          # 拉取依赖（wazero、google.golang.org/grpc、OpenTelemetry、Prometheus 等；MCP/A2A 按官方规范手写实现，无外部 SDK）
 make test            # 运行单元/集成测试（应全绿）
 ```
