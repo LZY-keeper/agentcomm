@@ -18,10 +18,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - run: go vet ./...
       # docs/legacy/ 是前代版本只读快照，保持历史原貌，不入 gofmt 格式化范围
       - run: test -z "$(gofmt -l $(find . -name '*.go' -not -path './docs/legacy/*'))" || (gofmt -l $(find . -name '*.go' -not -path './docs/legacy/*') && exit 1)
@@ -29,28 +29,28 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - run: go test ./...
 
   eval-gate:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # 完整历史：报告记录 commit
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - name: Run eval regression gate
         run: |
           go run ./cmd/eval -suite all -out eval/reports/ci \
             -baseline eval/reports/baseline/report.json -format markdown
       - name: Upload eval report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: eval-report
           path: |
@@ -62,5 +62,5 @@ jobs:
     needs: [eval-gate] # 镜像只在评测门禁通过后构建
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: docker build -t agentcomm:ci .
