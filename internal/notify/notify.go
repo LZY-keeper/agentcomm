@@ -25,8 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/logx"
-	"agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/store"
 )
 
 // Sink is the outbound delivery abstraction. The approval hook fires it

@@ -3,7 +3,7 @@ package router
 import (
 	"testing"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func driftTool(desc string) types.Tool {

@@ -6,11 +6,11 @@ import (
 	"context"
 	"net"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/registry"
-	"agentcomm/internal/rpc"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/registry"
+	"github.com/LZY-keeper/agentcomm/internal/rpc"
 
 	"google.golang.org/grpc"
 )

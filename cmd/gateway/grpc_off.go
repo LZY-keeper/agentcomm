@@ -5,9 +5,9 @@ package main
 import (
 	"context"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/registry"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/registry"
 )
 
 // maybeStartGRPC is a no-op without the "grpc" build tag, so the default

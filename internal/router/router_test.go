@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func newTestRouter(t *testing.T, budget int) *Router {

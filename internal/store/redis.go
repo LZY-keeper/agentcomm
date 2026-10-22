@@ -8,7 +8,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // redisUpdateCAS atomically bumps a task record when the caller's Rev matches.

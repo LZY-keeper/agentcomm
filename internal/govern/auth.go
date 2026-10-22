@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
 )
 
 // AuthOption configures the auth middleware.

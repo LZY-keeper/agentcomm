@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Strategy enumerates the load-balancing strategies (ported from v1's 6

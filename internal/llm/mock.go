@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Mock is an offline, deterministic provider. It needs no API key and is the

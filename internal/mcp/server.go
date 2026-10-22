@@ -7,8 +7,8 @@ import (
 	"io"
 	"net/http"
 
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Server exposes a tools.Registry over MCP (stdio + Streamable HTTP).

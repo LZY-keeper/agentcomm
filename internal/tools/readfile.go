@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // readRoot limits file reads to a sandbox root (default cwd). Set via the

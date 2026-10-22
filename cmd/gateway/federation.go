@@ -14,11 +14,11 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/mcp"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/mcp"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // federation tracks upstream MCP clients for retry-on-refresh.

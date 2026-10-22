@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // RegisterWeather queries open-meteo (no API key required). Offline-safe: on

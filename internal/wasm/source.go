@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"sync"
 
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // manifestReq asks a tool to describe itself.

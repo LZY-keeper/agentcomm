@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Handler executes a tool call and returns an MCP-shaped result.

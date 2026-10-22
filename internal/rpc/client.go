@@ -7,7 +7,7 @@ import (
 	"io"
 	"time"
 
-	"agentcomm/internal/rpc/pb"
+	"github.com/LZY-keeper/agentcomm/internal/rpc/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

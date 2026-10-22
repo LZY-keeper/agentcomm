@@ -21,26 +21,26 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"agentcomm/internal/a2a"
-	"agentcomm/internal/approval"
-	"agentcomm/internal/config"
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/govern"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/mcp"
-	"agentcomm/internal/notify"
-	"agentcomm/internal/obs"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/playground"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/registry"
-	"agentcomm/internal/router"
-	"agentcomm/internal/store"
-	"agentcomm/internal/taskapi"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
-	"agentcomm/internal/wasm"
+	"github.com/LZY-keeper/agentcomm/internal/a2a"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/govern"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/mcp"
+	"github.com/LZY-keeper/agentcomm/internal/notify"
+	"github.com/LZY-keeper/agentcomm/internal/obs"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/playground"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/registry"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/taskapi"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/wasm"
 )
 
 // Version is set at build time via -ldflags "-X main.Version=...".
@@ -200,13 +200,18 @@ func main() {
 
 	// v3 governance chain: request id → auth → rate limit → budget. Disabled
 	// unless keys are configured — the offline demo keeps zero friction.
+	var keys *govern.Keys
+	usageLedger := govern.NewUsageLedger(nil, budget) // anonymous deployments: counters only
+	mux.Handle("/api/usage", usageLedger)
 	handler := govern.Chain(mux, govern.RequestID())
 	if cfg.KeysConfigured() {
-		keys, err := govern.LoadKeys(ctx, cfg.Govern.KeysInline, cfg.Govern.KeysFile)
+		loadedKeys, err := govern.LoadKeys(ctx, cfg.Govern.KeysInline, cfg.Govern.KeysFile)
 		if err != nil {
 			logx.Error(ctx, "fatal: govern keys", "err", err)
 			os.Exit(1)
 		}
+		keys = loadedKeys
+		usageLedger.SetKeys(keys) // ledger joins key records with counters
 		handler = govern.Chain(handler,
 			govern.Auth(keys,
 				govern.WithLoopbackAllowed(cfg.Govern.AllowLoopback),

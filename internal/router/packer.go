@@ -1,8 +1,8 @@
 package router
 
 import (
-	"agentcomm/internal/rag"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // EstimateTokens approximates how many prompt tokens a tool's schema costs when

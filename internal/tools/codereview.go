@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // RegisterCodeReview runs lightweight static-analysis heuristics on a snippet

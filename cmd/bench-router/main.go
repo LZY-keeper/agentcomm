@@ -15,11 +15,11 @@ import (
 	"fmt"
 	"os"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/eval"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/eval"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/router"
 )
 
 type benchCase struct {

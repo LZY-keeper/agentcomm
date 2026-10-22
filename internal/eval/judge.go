@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"agentcomm/internal/llm"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Judge 评判 E2E 终答是否可接受。

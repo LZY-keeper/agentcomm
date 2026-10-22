@@ -11,10 +11,10 @@ import (
 	"fmt"
 	"sort"
 
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/router"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // RouterRunner 评测配置。零值不可用，用 NewRouterRunner。

@@ -7,9 +7,9 @@ import (
 	"os"
 	"sync"
 
-	"agentcomm/internal/logx"
-	"agentcomm/internal/obs"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/obs"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // FingerprintStore implements anti-rug-pull protection (v3): a tool's

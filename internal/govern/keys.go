@@ -58,6 +58,17 @@ type Keys struct {
 // Count returns the number of loaded keys.
 func (k *Keys) Count() int { return len(k.byHash) }
 
+// Records returns a copy of all loaded key records (v3.2: the /api/usage
+// ledger iterates provisioned keys; records hold hashes only — never
+// plaintext — so exposure here does not widen the secret surface).
+func (k *Keys) Records() []KeyRecord {
+	out := make([]KeyRecord, 0, len(k.byHash))
+	for _, rec := range k.byHash {
+		out = append(out, rec)
+	}
+	return out
+}
+
 // Lookup finds a key record by plaintext; constant-time over the hash.
 func (k *Keys) Lookup(plaintext string) (KeyRecord, bool) {
 	h := HashKey(plaintext)

@@ -8,8 +8,8 @@ import (
 	"context"
 	"os"
 
-	"agentcomm/internal/mcp"
-	"agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/mcp"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
 )
 
 func main() {

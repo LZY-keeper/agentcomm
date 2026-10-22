@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/approval"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/store"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // ctxKey carries per-task identity through the pipeline (audit/trace use).

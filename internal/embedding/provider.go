@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/config"
 )
 
 // Provider turns texts into vectors.

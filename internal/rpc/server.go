@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/logx"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/registry"
-	"agentcomm/internal/rpc/pb"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/registry"
+	"github.com/LZY-keeper/agentcomm/internal/rpc/pb"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 	"google.golang.org/grpc"
 )
 

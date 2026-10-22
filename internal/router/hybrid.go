@@ -4,8 +4,8 @@ import (
 	"context"
 	"sort"
 
-	"agentcomm/internal/rag"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Hybrid fuses three orthogonal retrieval signals into one ranking:

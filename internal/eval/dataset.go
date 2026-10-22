@@ -16,7 +16,7 @@ import (
 	"os"
 	"sort"
 
-	"agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
 
 	"gopkg.in/yaml.v3"
 )

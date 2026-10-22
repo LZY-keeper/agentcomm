@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
 )
 
 // 元测试：E2E runner 自身在迷你金标上跑通三条关键路径

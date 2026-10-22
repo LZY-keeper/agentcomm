@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/registry"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/registry"
 )
 
 func main() {

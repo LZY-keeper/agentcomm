@@ -12,7 +12,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Client speaks the Streamable HTTP transport to an upstream MCP server,

@@ -21,10 +21,10 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/eval"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/eval"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/router"
 )
 
 var Version = "dev"

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Retriever is the dense-retrieval core: it indexes tools by an embedding of

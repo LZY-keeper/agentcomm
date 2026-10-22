@@ -13,15 +13,15 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/approval"
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/router"
-	"agentcomm/internal/store"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // e2eGuardedTool 是评测专用的审批门工具（仅存在于 fixture，不进生产注册表）。

@@ -1,14 +1,14 @@
 # 编译与运行指南（v3）
 
-`agentcomm` 用 Go 1.22+ 实现（v3 开发基线 Go 1.25），纯 Go（无 cgo），跨平台单二进制。**默认离线可跑**（内置确定性 mock LLM/embedding，无需任何 API key）。
+`agentcomm` 用 Go 实现（基线 Go 1.26，见 go.mod），纯 Go（无 cgo），跨平台单二进制。**默认离线可跑**（内置确定性 mock LLM/embedding，无需任何 API key）。
 
-> 约束说明：本项目在开发机（无 Go、无外网）上无法就地编译验证；请在装有 Go 1.22+ 且能访问 `proxy.golang.org` 的机器上构建。`go mod tidy` 会自动解析依赖并生成 `go.sum`。
+> 约束说明：请在装有 Go 1.26+ 且能访问模块代理的机器上构建（国内可用 `GOPROXY=https://goproxy.cn,direct`）。`go mod tidy` 会自动解析依赖并生成 `go.sum`。
 
 ## 0. 环境要求
 
 | 依赖 | 版本 | 何时需要 |
 |------|------|----------|
-| Go | 1.22+ | 必需 |
+| Go | 1.26+ | 必需 |
 | protoc + protoc-gen-go + protoc-gen-go-grpc | 任意较新 | 仅 gRPC（`make grpc`） |
 | TinyGo（WASI） | 0.30+ | 仅自建 WASM 工具（可选） |
 | Docker / docker compose | — | 仅容器部署（可选） |

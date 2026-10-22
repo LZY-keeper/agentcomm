@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func collect(t *testing.T, ch <-chan types.Token) []types.Token {

@@ -14,16 +14,16 @@ import (
 	"syscall"
 	"time"
 
-	"agentcomm/internal/a2a"
-	"agentcomm/internal/config"
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/router"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/a2a"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func main() {

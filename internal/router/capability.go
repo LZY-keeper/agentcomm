@@ -3,7 +3,7 @@ package router
 import (
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Capability scoring models a lightweight tool capability graph: each tool

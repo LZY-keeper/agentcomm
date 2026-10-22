@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/llm"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // ToolInvoker executes a tool call and returns its result. It is supplied by

@@ -3,7 +3,7 @@ package router
 import (
 	"sync"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Feedback learns the empirical success rate of each selected tool and nudges

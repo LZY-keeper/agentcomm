@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/store"
 )
 
 func testReq() store.ApprovalRequest {

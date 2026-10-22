@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/llm"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/obs"
-	"agentcomm/internal/router"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/obs"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Deps bundles the orchestrator's collaborators (dependency injection).

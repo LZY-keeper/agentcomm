@@ -3,8 +3,8 @@ package orchestrator
 import (
 	"context"
 
-	"agentcomm/internal/llm"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Agent is a specialist the orchestrator can route to. The default LLMAgent

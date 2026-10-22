@@ -5,13 +5,13 @@ import (
 	"strings"
 	"testing"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/rag"
-	"agentcomm/internal/router"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/router"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func newTestOrchestrator(t *testing.T) (*Orchestrator, *router.Router) {

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // fakeClock is a manually-advanced clock for deterministic TTL tests.

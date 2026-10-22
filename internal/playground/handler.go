@@ -16,10 +16,10 @@ import (
 
 	"context"
 
-	"agentcomm/internal/logx"
-	"agentcomm/internal/obs"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/obs"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 //go:embed web/*

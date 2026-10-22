@@ -1,4 +1,4 @@
-module agentcomm
+module github.com/LZY-keeper/agentcomm
 
 go 1.26.0
 

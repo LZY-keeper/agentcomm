@@ -13,11 +13,11 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/approval"
-	"agentcomm/internal/logx"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/store"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Handler mounts /api/tasks routes.

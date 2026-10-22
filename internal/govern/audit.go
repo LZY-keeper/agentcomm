@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/logx"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/store"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/logx"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // --- budget ---
@@ -36,6 +36,19 @@ func (b *MemBudget) Used(_ context.Context, keyID string) (int64, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return b.used[keyID], nil
+}
+
+// Snapshot returns a copy of all per-key counters (v3.2: the /api/usage
+// ledger). Zero-usage keys are absent — the handler joins against provisioned
+// key records to show them with 0.
+func (b *MemBudget) Snapshot() map[string]int64 {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	out := make(map[string]int64, len(b.used))
+	for k, v := range b.used {
+		out[k] = v
+	}
+	return out
 }
 
 func (b *MemBudget) Charge(_ context.Context, keyID string, delta int64) error {

@@ -14,7 +14,7 @@ import (
 	"context"
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Script 是一段脚本化 ReAct 轨迹：按序发起工具调用，结果回喂后用 Final

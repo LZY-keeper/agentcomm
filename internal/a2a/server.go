@@ -21,10 +21,10 @@ import (
 	"strings"
 	"time"
 
-	"agentcomm/internal/approval"
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/store"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Protocol versions advertised in supported_interfaces (v1.0 requirement:

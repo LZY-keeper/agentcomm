@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func collectScripted(t *testing.T, ch <-chan types.Token) (text string, calls []types.ToolCall) {

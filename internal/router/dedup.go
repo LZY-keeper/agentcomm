@@ -3,7 +3,7 @@ package router
 import (
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Dedup resolves conflicts when several federated servers expose equivalent

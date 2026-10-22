@@ -14,7 +14,7 @@ import (
 	"errors"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // cryptoRead is a thin indirection over rand.Read (keeps NewID testable).

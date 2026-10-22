@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // OpenAICompatible speaks the OpenAI /v1/chat/completions (streaming) wire

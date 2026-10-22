@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // MemoryTaskStore is the default TaskStore: an in-memory map with TTL expiry

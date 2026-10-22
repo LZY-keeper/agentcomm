@@ -3,8 +3,8 @@ package a2a
 import (
 	"context"
 
-	"agentcomm/internal/orchestrator"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/orchestrator"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // A2AAgent adapts a remote A2A peer to the orchestrator's local Agent

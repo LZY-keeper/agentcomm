@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // AgentStats maintains live per-agent latency/success estimates (exponentially

@@ -11,8 +11,8 @@ import (
 	"os"
 	"time"
 
-	"agentcomm/internal/rpc"
-	"agentcomm/internal/rpc/pb"
+	"github.com/LZY-keeper/agentcomm/internal/rpc"
+	"github.com/LZY-keeper/agentcomm/internal/rpc/pb"
 )
 
 func main() {

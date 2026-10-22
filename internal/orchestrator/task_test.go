@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"agentcomm/internal/approval"
-	"agentcomm/internal/llm"
-	"agentcomm/internal/store"
-	"agentcomm/internal/tools"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/approval"
+	"github.com/LZY-keeper/agentcomm/internal/llm"
+	"github.com/LZY-keeper/agentcomm/internal/store"
+	"github.com/LZY-keeper/agentcomm/internal/tools"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // scriptedProvider is a deterministic two-phase LLM for HITL tests:

@@ -3,7 +3,7 @@ package router
 import (
 	"context"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // ToolSource is a supply of tools for the router to federate. The concrete MCP

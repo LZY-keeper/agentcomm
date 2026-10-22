@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 type entry struct {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"agentcomm/internal/embedding"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/embedding"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 func sampleTools() []types.Tool {

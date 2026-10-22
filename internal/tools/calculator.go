@@ -8,7 +8,7 @@ import (
 	"strings"
 	"unicode"
 
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // RegisterCalculator registers a safe arithmetic evaluator (recursive descent).

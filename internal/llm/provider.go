@@ -10,8 +10,8 @@ import (
 	"context"
 	"fmt"
 
-	"agentcomm/internal/config"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/config"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Provider streams a chat completion as a channel of tokens. The channel

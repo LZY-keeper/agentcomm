@@ -4,8 +4,8 @@ import (
 	"math"
 	"strings"
 
-	"agentcomm/internal/rag"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // BM25 is a classic sparse ranker over tool fingerprints. It complements dense

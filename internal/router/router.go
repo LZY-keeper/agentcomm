@@ -11,8 +11,8 @@ import (
 	"context"
 	"sync"
 
-	"agentcomm/internal/rag"
-	"agentcomm/internal/types"
+	"github.com/LZY-keeper/agentcomm/internal/rag"
+	"github.com/LZY-keeper/agentcomm/internal/types"
 )
 
 // Params tunes the router engine.
