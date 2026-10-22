@@ -52,6 +52,11 @@ type Opt func(*types.Tool)
 func WithInputTypes(s ...string) Opt  { return func(t *types.Tool) { t.InputTypes = s } }
 func WithOutputTypes(s ...string) Opt { return func(t *types.Tool) { t.OutputTypes = s } }
 
+// WithServerID overrides the owning server id (federation: remote tools
+// registered into the local registry keep their upstream identity for audit
+// and fingerprint keying — "server/name" — instead of "builtin").
+func WithServerID(id string) Opt { return func(t *types.Tool) { t.ServerID = id } }
+
 // WithRequireApproval marks the tool as human-approval-gated (HITL): the
 // orchestrator parks any execution in input-required until an operator
 // approves or denies via the approval API.

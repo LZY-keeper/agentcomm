@@ -39,10 +39,10 @@ Agent 自动调用工具可以；划扣款、删文件、对外发邮件，必�
 
 | 层 | 能力 |
 |---|---|
-| 🔀 **联邦 MCP 工具路由** | 混合检索（dense ⊕ BM25 ⊕ capability）· token 预算背包装箱 · 跨 server 去重 · bandit 反馈 · 定义指纹锁定（anti-rug-pull） |
+| 🔀 **联邦 MCP 工具路由** | 混合检索（dense ⊕ BM25 ⊕ capability）· token 预算背包装箱 · 跨 server 去重 · bandit 反馈（**计数可持久化，学习跨重启存活**）· 定义指纹锁定（anti-rug-pull，strict 模式可阻断漂移）· `MCP_SERVERS` 外部工具联邦（远端工具过同一审批/审计/截断链） |
 | 🧠 **多 Agent 编排** | intent → discovery → 负载均衡（6 策略，实测 EMA 延迟/成功率驱动）→ 熔断 → ReAct 循环（支持审批 park/恢复）→ 真 token 流式 |
 | 📦 **WASM 沙箱** | wazero（纯 Go、无 CGO）执行第三方工具，默认零权限，能力显式声明才放行 |
-| 🗂 **任务横层** | TaskStore / SessionStore（memory / redis 可切换）· 审批 Gate · checkpoint 恢复 |
+| 🗂 **任务横层** | TaskStore / SessionStore（memory / redis 可切换）· 审批 Gate · checkpoint 恢复 · **审批触达 webhook（钉钉/企微/飞书卡片，只外发脱敏摘要，绝不阻塞审批流）** |
 | 🛡 **治理横层** | virtual key · 每 key 限流与 token 预算 · 工具白名单 · 脱敏审计日志 |
 
 **协议对齐站在 2026 浪尖**：A2A v1.0（Ed25519 签名 agent card + JWKS 公钥发布）· MCP 三版本协商（2025-06-18 / 2025-11-25 / 2026-07-28）。
@@ -99,17 +99,23 @@ GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$KEY_HASH:tenant-a:5:10:200000" make r
 
 无 key → `401` · 超速 → `429 + Retry-After` · 超预算 → `402` · 全量审计日志。
 
-### 演示 3：审批跨重启可恢复
+### 演示 3：审批跨重启可恢复 + 审批触达
 
 ```bash
-REDIS_ADDR=127.0.0.1:6379 make run   # TaskStore 切 redis，重启后审批任务还在
+# 审批等待时推送钉钉/企微/飞书卡片（含脱敏参数摘要与裁决接口），无人值守不再静默挂死
+APPROVAL_WEBHOOK_URL="https://oapi.dingtalk.com/robot/send?access_token=xxx" \
+APPROVAL_WEBHOOK_FORMAT=dingtalk \
+TOOLS_REQUIRE_APPROVAL=calculator make run
+
+# Redis 启用后：审批任务跨重启可恢复，bandit 学习计数同样持久化
+REDIS_ADDR=127.0.0.1:6379 make run
 ```
 
 ---
 
 ## 一个想法，三次实现
 
-这个项目没有停留在 demo：v1 用 C++/gRPC 验证协议设计，v2 用 Go 重写验证架构，v3 补齐任务持久化、治理层与 2026 协议对齐并建成评测子系统。三代源码快照完整保留在 [`docs/legacy/`](docs/legacy/README.md)——工程演进本身就是这个仓库的一部分。
+这个项目没有停留在 demo：v1 用 C++/gRPC 验证协议设计，v2 用 Go 重写验证架构，v3 补齐任务持久化、治理层与 2026 协议对齐并建成评测子系统，v3.2 把"已承诺"变成"已接线"——MCP 外部联邦、审批触达、学习持久化落地，文档同步为契约。三代源码快照完整保留在 [`docs/legacy/`](docs/legacy/README.md)——工程演进本身就是这个仓库的一部分。
 
 ## 端点速查
 

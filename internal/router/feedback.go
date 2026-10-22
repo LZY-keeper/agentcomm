@@ -16,7 +16,9 @@ type Feedback interface {
 	Record(toolID string, success bool)
 }
 
-// NoopFeedback is the identity feedback (used until a persistence store is wired).
+// NoopFeedback is the identity feedback. Production wires BetaFeedback (with
+// an optional CountStore for restart-surviving learning); eval and tests use
+// Noop to stay stateless and deterministic — the eval no-state rule is law.
 type NoopFeedback struct{}
 
 func (NoopFeedback) Adjust(s []types.ScoredTool) []types.ScoredTool { return s }
@@ -28,6 +30,8 @@ type BetaFeedback struct {
 	alpha  map[string]float64 // successes (prior 1)
 	beta   map[string]float64 // failures (prior 1)
 	weight float64            // how much learned mean influences score
+	store  CountStore         // optional persistence (v3.2: learned routing survives restarts)
+	dirty  bool               // counts changed since last successful Flush
 }
 
 func NewBetaFeedback(weight float64) *BetaFeedback {
@@ -45,6 +49,7 @@ func (b *BetaFeedback) Record(toolID string, success bool) {
 	} else {
 		b.beta[toolID]++
 	}
+	b.dirty = true
 }
 
 // Adjust adds a small bonus proportional to each tool's learned success mean,
@@ -77,4 +82,55 @@ func insertionSortDesc(s []types.ScoredTool) {
 			j--
 		}
 	}
+}
+
+// CountStore persists Beta(α,β) counters so learned routing survives a
+// restart ("correct it once, it stays corrected"). Implementations must
+// tolerate concurrent Save; errors are advisory — feedback loss degrades to
+// re-learning, never to wrong routing.
+type CountStore interface {
+	SaveCounts(counts map[string][2]float64) error
+	LoadCounts() (map[string][2]float64, error)
+}
+
+// SetCountStore attaches persistence and loads existing counts. Call before
+// the router starts serving traffic.
+func (b *BetaFeedback) SetCountStore(cs CountStore) error {
+	if cs == nil {
+		return nil
+	}
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.store = cs
+	if counts, err := cs.LoadCounts(); err == nil && counts != nil {
+		for id, c := range counts {
+			b.alpha[id] = c[0]
+			b.beta[id] = c[1]
+		}
+	} else if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Flush persists counters when dirty. Called periodically and at shutdown —
+// never per-call: the hot path only sets a bool under the lock.
+func (b *BetaFeedback) Flush() error {
+	b.mu.Lock()
+	if !b.dirty || b.store == nil {
+		b.mu.Unlock()
+		return nil
+	}
+	counts := make(map[string][2]float64, len(b.alpha))
+	for id := range b.alpha {
+		counts[id] = [2]float64{b.alpha[id], b.beta[id]}
+	}
+	b.mu.Unlock()
+	if err := b.store.SaveCounts(counts); err != nil {
+		return err
+	}
+	b.mu.Lock()
+	b.dirty = false
+	b.mu.Unlock()
+	return nil
 }

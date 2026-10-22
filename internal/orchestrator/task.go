@@ -71,6 +71,7 @@ type Hub struct {
 	sessionTurns    int
 	streamFn        streamFunc
 	usage           UsageSink
+	notifier        ApprovalNotifier // fire-and-forget approval outreach (v3.2)
 
 	mu      sync.Mutex
 	runners map[string]*TaskRunner
@@ -111,6 +112,16 @@ func (h *Hub) SetStream(fn streamFunc) { h.streamFn = fn }
 
 // SetUsageSink wires the per-key budget accounting (govern layer).
 func (h *Hub) SetUsageSink(u UsageSink) { h.usage = u }
+
+// ApprovalNotifier is the outbound delivery hook fired when a task parks in
+// input-required (v3.2: the on-call human learns about the approval without
+// watching the playground). Implementations must be fire-and-forget safe.
+type ApprovalNotifier interface {
+	NotifyApproval(ctx context.Context, req store.ApprovalRequest)
+}
+
+// SetNotifier wires the approval notification sink (optional; nil = disabled).
+func (h *Hub) SetNotifier(n ApprovalNotifier) { h.notifier = n }
 
 // ApprovalHooks builds the loop hooks the orchestrator must apply so every
 // ReAct loop parks on RequireApproval tools (v3 governance wiring).
@@ -503,6 +514,12 @@ func (r *TaskRunner) approvalHook(ctx context.Context, call types.ToolCall) (boo
 	select {
 	case r.out <- types.Token{Finish: string(types.ControlInputRequired)}:
 	default:
+	}
+
+	// v3.2: reach the human who must decide — async, masked fields only,
+	// delivery failure never touches the approval flow.
+	if h.notifier != nil {
+		h.notifier.NotifyApproval(ctx, *rec.Approval)
 	}
 
 	logx.Info(ctx, "tool parked for approval", "task", r.id, "tool", call.ToolName)

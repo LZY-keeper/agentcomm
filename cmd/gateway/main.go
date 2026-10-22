@@ -19,6 +19,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/redis/go-redis/v9"
+
 	"agentcomm/internal/a2a"
 	"agentcomm/internal/approval"
 	"agentcomm/internal/config"
@@ -27,6 +29,7 @@ import (
 	"agentcomm/internal/llm"
 	"agentcomm/internal/logx"
 	"agentcomm/internal/mcp"
+	"agentcomm/internal/notify"
 	"agentcomm/internal/obs"
 	"agentcomm/internal/orchestrator"
 	"agentcomm/internal/playground"
@@ -77,6 +80,11 @@ func main() {
 			logx.Warn(ctx, "WASM tools not loaded (continuing with native only)", "err", err)
 		}
 	}
+	// v3.2: MCP_SERVERS federation — upstream tools join the same registry as
+	// forwarding-handler entries, so approval/audit/truncation/fingerprint
+	// hooks apply unchanged. Builtin/WASM registrations keep precedence on
+	// name conflicts (trust ordering: local > remote).
+	fed := wireMCPServers(ctx, cfg, toolReg)
 
 	// --- pillar 1: federated tool router engine ---
 	emb, err := embedding.New(cfg.Embedding)
@@ -88,6 +96,10 @@ func main() {
 	retriever := rag.NewRetriever(emb, rag.NewBruteForceIndex(), cache, cfg.Router.TopK, cfg.Router.SimThreshold)
 	fb := router.NewBetaFeedback(0.1)
 	pins := router.NewFingerprintStore(os.Getenv("TOOL_FINGERPRINTS_FILE"))
+	pins.SetMetrics(metrics)
+	if v := os.Getenv("TOOL_FINGERPRINT_STRICT"); v == "true" || v == "1" {
+		pins.SetStrict(true) // v3.2 wiring: drift is blocked, not just alerted
+	}
 	rt := router.New(toolReg, retriever, router.Params{
 		TopK: cfg.Router.TopK, TokenBudget: cfg.Router.TokenBudget, CandidateCap: 50,
 		DenseWeight: cfg.Router.DenseWeight, SparseWeight: cfg.Router.SparseWeight, CapWeight: cfg.Router.CapabilityWeight,
@@ -98,6 +110,18 @@ func main() {
 	taskStore, sessionStore := newStores(ctx, cfg)
 	defer taskStore.Close()
 	defer sessionStore.Close()
+	// v3.2: learned routing survives restarts when redis is the store backend
+	// (same lifecycle as task records); otherwise learning is per-process.
+	if rdb := redisClientOf(taskStore); rdb != nil {
+		if err := fb.SetCountStore(store.NewRedisCountStore(rdb)); err != nil {
+			logx.Warn(ctx, "feedback counts not loaded (starting fresh)", "err", err)
+		}
+		defer func() {
+			if err := fb.Flush(); err != nil {
+				logx.Warn(ctx, "feedback flush on shutdown failed", "err", err)
+			}
+		}()
+	}
 
 	// --- LLM provider + pillar 2: orchestrator + task hub (HITL) ---
 	provider, err := llm.New(cfg.LLM)
@@ -119,6 +143,18 @@ func main() {
 		time.Duration(cfg.Store.ApprovalTimeoutSecs)*time.Second, cfg.Store.SessionMaxTurns)
 	hub.SetStream(orch.Stream)
 	hub.SetUsageSink(budget) // per-key token accounting → budget enforcement
+	// v3.2: approval outreach — the on-call human gets pinged instead of the
+	// task silently burning its approval timeout. Disabled unless configured.
+	if n := notify.NewWebhook(notify.Config{
+		URL:         os.Getenv("APPROVAL_WEBHOOK_URL"),
+		Format:      os.Getenv("APPROVAL_WEBHOOK_FORMAT"),
+		HMACSecret:  os.Getenv("APPROVAL_WEBHOOK_SECRET"),
+		DecisionURL: publicURLOf(cfg),
+		Retries:     2,
+	}); n != nil {
+		hub.SetNotifier(n)
+		logx.Info(ctx, "approval webhook enabled", "format", os.Getenv("APPROVAL_WEBHOOK_FORMAT"))
+	}
 	orch.SetHooks(&orchestrator.LoopHooks{
 		OnBeforeTool: hub.ApprovalHooks().OnBeforeTool,
 		OnAfterTool:  makeResultLimiter(cfg.Tools.MaxResultBytes),
@@ -132,6 +168,7 @@ func main() {
 			case <-ctx.Done():
 				return
 			case <-t.C:
+				fed.retryUnreached(ctx) // v3.2: pick up upstreams that were down at boot
 				_ = rt.Refresh(ctx)
 			}
 		}
@@ -147,6 +184,9 @@ func main() {
 		"llm": cfg.LLM.Provider, "embedding": cfg.Embedding.Provider,
 	})
 	pg.SetEvalReportDir(cfg.Eval.ReportDir) // v3.1: playground 评测报告面板（只读）
+	if cfg.Govern.MaxQueryBytes > 0 && cfg.Govern.MaxQueryBytes != 32768 {
+		playground.SetMaxQueryBytes(int64(cfg.Govern.MaxQueryBytes)) // v3.2: config now honored
+	}
 	mux := http.NewServeMux()
 	pg.Mount(mux)
 	taskapi.NewHandler(hub, taskStore, gate).Mount(mux)
@@ -282,6 +322,15 @@ func publicURLOf(cfg config.Config) string {
 		port = "8080"
 	}
 	return "http://localhost:" + port + "/"
+}
+
+// redisClientOf returns the shared redis client when the task store is the
+// redis backend (feedback counts ride the same pool); nil otherwise.
+func redisClientOf(st store.TaskStore) *redis.Client {
+	if rs, ok := st.(*store.RedisStores); ok {
+		return rs.Redis()
+	}
+	return nil
 }
 
 var _ = strconv.Itoa // placate imports until config helpers grow

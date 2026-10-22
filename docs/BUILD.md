@@ -72,8 +72,16 @@ DISTRIBUTED=1 make run     # 启动 registry(:8500) + 独立 math-agent(:5001) +
 ./bin/mcpserver
 # 网关侧：把外部 MCP server 加入联邦（环境变量）
 MCP_SERVERS=http://localhost:9000 make run
+# 显式命名上游（指纹与审计里的 server id）：
+MCP_SERVERS="team-tools@http://10.0.0.5:9000,http://localhost:9000" make run
 ```
-MCP 实现遵循 2025-06-18 规范：`initialize` 握手 → `notifications/initialized` → `tools/list` / `tools/call`，stdio + Streamable HTTP 传输。
+联邦语义（v3.2）：上游工具以转发 handler 注册进统一工具注册表——审批门、审计脱敏、
+结果截断、定义指纹对远端工具**原样生效**；命名冲突时本地注册优先（信任排序：
+builtin > WASM > remote）。启动时不可达的上游记警告并跳过，周期刷新（5 分钟）自动重试，
+单个上游故障不影响网关与其余联邦。
+
+MCP 实现遵循 2025-06-18 / 2025-11-25 / 2026-07-28 三版本协商：`initialize` 握手 →
+`notifications/initialized` → `tools/list` / `tools/call`，stdio + Streamable HTTP 传输。
 
 ## 6. 方式 F：WASM 沙箱工具（可选）
 
@@ -155,9 +163,13 @@ GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$KEYHASH:tenant-a:5:10:200000|read_fil
 | `TOOL_MAX_RESULT_BYTES` | 16384 | 工具结果截断上限 |
 | `TOOL_MAX_FILE_BYTES` | 1048576 | read_file 大小上限 |
 | `TOOL_FINGERPRINTS_FILE` | — | anti-rug-pull 指纹文件（加载+落盘目标） |
+| `TOOL_FINGERPRINT_STRICT` | false | true=定义漂移的工具拒绝入索引（默认仅告警） |
 | `STORE_BACKEND` | auto | memory / redis（auto=按 REDIS_ADDR） |
 | `APPROVAL_TIMEOUT` | 3600 | 审批 park 超时（秒），超时保持 input-required |
-| `PUBLIC_URL` | — | A2A 卡片对外 URL |
+| `APPROVAL_WEBHOOK_URL` | — | 审批触达 webhook（未配置=关闭） |
+| `APPROVAL_WEBHOOK_FORMAT` | generic | generic / dingtalk / wecom / feishu 卡片模板 |
+| `APPROVAL_WEBHOOK_SECRET` | — | HMAC-SHA256 签名密钥（`X-AgentComm-Signature` 头） |
+| `PUBLIC_URL` | — | A2A 卡片对外 URL（也用于审批卡片中的裁决接口地址） |
 
 ### 协议对齐
 - A2A v1.0：`/.well-known/agent-card.json` 带 `X-AgentCard-Signature`
@@ -170,6 +182,20 @@ GOV_ALLOW_LOOPBACK=false GOV_KEYS="team-a:$KEYHASH:tenant-a:5:10:200000|read_fil
 ```bash
 REDIS_ADDR=127.0.0.1:6379 make run   # 审批任务跨重启可恢复（启动时自动 RecoverPending）
 ```
+Redis 启用时 bandit 反馈计数同样持久化（`agw:feedback`）——工具路由的学习成果
+跨重启存活；内存模式下学习仅进程内有效（评测路径恒为无状态，金标确定性不受影响）。
+
+### 审批触达（v3.2）
+```bash
+# 钉钉群机器人：审批等待时推送卡片（含已脱敏参数摘要与裁决接口地址）
+APPROVAL_WEBHOOK_URL="https://oapi.dingtalk.com/robot/send?access_token=xxx" \
+APPROVAL_WEBHOOK_FORMAT=dingtalk \
+APPROVAL_WEBHOOK_SECRET="hmac-verify-secret" \
+TOOLS_REQUIRE_APPROVAL=write_file make run
+```
+- 只外发**已脱敏**的参数摘要（与审计链同一 `maskSecrets`），原始参数不出进程；
+- fire-and-forget：投递失败指数退避重试后丢弃并告警日志，**绝不阻塞审批主流程**；
+- 未配置 URL 时整体关闭——离线零摩擦哲学不变。
 
 ## 12. 评测体系（v3.1：金标集 / 报告 / 回归门禁）
 

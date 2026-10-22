@@ -24,8 +24,8 @@ type Client struct {
 	base       string
 	httpCli    *http.Client
 	counter    uint64
-	once       sync.Once
-	initErr    error
+	mu         sync.Mutex
+	inited     bool
 	negotiated string
 }
 
@@ -38,31 +38,47 @@ func NewClient(name, baseURL string) *Client {
 
 func (c *Client) Name() string { return c.name }
 
-// ensureInit performs the handshake once. We offer ProtocolVersionLatest
-// (2025-11-25); the server may negotiate down to 2025-06-18 or accept our
-// request — per spec the client proceeds with the server's returned version.
-// A 2026-07-28 stateless server may ignore initialize entirely; its tools/*
-// responses work either way since our calls are stateless per request.
+// ensureInit performs the handshake once per successful negotiation. We offer
+// ProtocolVersionLatest (2025-11-25); the server may negotiate down to
+// 2025-06-18 or accept our request — per spec the client proceeds with the
+// server's returned version. A 2026-07-28 stateless server may ignore
+// initialize entirely; its tools/* responses work either way since our calls
+// are stateless per request. A failed handshake stays retryable: an upstream
+// that was down at startup must not be locked out forever (the gateway
+// refreshes federated tools periodically).
 func (c *Client) ensureInit(ctx context.Context) error {
-	c.once.Do(func() {
-		raw, err := c.request(ctx, "initialize", map[string]any{
-			"protocolVersion": ProtocolVersionLatest,
-			"capabilities":    map[string]any{},
-			"clientInfo":      ClientInfo{Name: "agentcomm-router", Version: "3.0"},
-		})
-		if err == nil && len(raw) > 0 {
-			var ir InitializeResult
-			if json.Unmarshal(raw, &ir) == nil && ir.ProtocolVersion != "" {
-				c.negotiated = ir.ProtocolVersion
-			}
-		} else if err != nil {
-			c.initErr = err
-			return
-		}
-		// notifications/initialized — no response expected (older revisions).
-		_, _ = c.request(ctx, "notifications/initialized", nil)
+	c.mu.Lock()
+	if c.inited {
+		c.mu.Unlock()
+		return nil
+	}
+	c.mu.Unlock()
+
+	raw, err := c.request(ctx, "initialize", map[string]any{
+		"protocolVersion": ProtocolVersionLatest,
+		"capabilities":    map[string]any{},
+		"clientInfo":      ClientInfo{Name: "agentcomm-router", Version: "3.2"},
 	})
-	return c.initErr
+	if err != nil {
+		return err // retryable — the next Tools/Call attempt re-handshakes
+	}
+	if len(raw) > 0 {
+		var ir InitializeResult
+		if json.Unmarshal(raw, &ir) == nil && ir.ProtocolVersion != "" {
+			c.mu.Lock()
+			c.negotiated = ir.ProtocolVersion
+			c.inited = true
+			c.mu.Unlock()
+		}
+	} else {
+		// stateless 2026-07-28 server: empty initialize result, but calls work
+		c.mu.Lock()
+		c.inited = true
+		c.mu.Unlock()
+	}
+	// notifications/initialized — no response expected (older revisions).
+	_, _ = c.request(ctx, "notifications/initialized", nil)
+	return nil
 }
 
 // Tools lists tools from the upstream server (router.ToolSource).

@@ -57,6 +57,11 @@ func (s *RedisStores) Ping(ctx context.Context) error {
 	return s.rdb.Ping(c).Err()
 }
 
+// Redis exposes the underlying client for co-located counters (v3.2: the
+// router's feedback counts share this pool instead of dialing a second
+// connection). The gateway reaches it via interface type assertion.
+func (s *RedisStores) Redis() *redis.Client { return s.rdb }
+
 func taskKey(id string) string      { return "agw:task:" + id }
 func sessIdxKey(sess string) string { return "agw:task:idx:" + sess }
 func sessKey(key string) string     { return "agw:sess:" + key }
